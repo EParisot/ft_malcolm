@@ -26,6 +26,7 @@
 # include <netinet/ip.h>
 # include <sys/socket.h>
 # include <stdbool.h>
+# include <netpacket/packet.h>
 
 bool g_stop;
 
@@ -40,6 +41,7 @@ typedef struct			s_mac
 typedef struct			s_env
 {
 	struct sockaddr_in	*localhost;
+	t_mac				*local_mac;
 	struct sockaddr_in	*source_ip;
 	t_mac				*source_mac;
 	struct sockaddr_in	*target_ip;

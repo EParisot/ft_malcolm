@@ -60,7 +60,6 @@ static struct sockaddr_in	*parse_ip(char *str)
 	if ((sa = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL)
 		return (NULL);
 	sa->sin_family = AF_INET;
-
 	if (inet_pton(AF_INET, str, &sa->sin_addr) != 1)
 		return (NULL);
 	return (sa);
@@ -122,6 +121,8 @@ static void				clean_env(t_env *env)
 		close(env->sock_fd);
 	if (env->localhost)
 		free(env->localhost);
+	if (env->local_mac)
+		free(env->local_mac);
 	if (env->source_ip)
 		free(env->source_ip);
 	if (env->target_ip)
@@ -148,6 +149,7 @@ int						main(int ac, char **av)
 	if ((env = (t_env*)malloc(sizeof(t_env))) == NULL)
 		return (-1);
 	env->localhost = NULL;
+	env->local_mac = NULL;
 	env->source_ip = NULL;
 	env->source_mac = NULL;
 	env->target_ip = NULL;

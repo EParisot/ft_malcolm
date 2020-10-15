@@ -87,16 +87,13 @@ int			ft_malcolm(t_env *env)
 	while (g_stop == false)
 	{
 		received = recv(env->sock_fd, buf, buf_size, 0);
-		if (received > 0)
+		if (received && ft_strlen(buf) > 13 && (((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
 		{
-			if (ft_strlen(buf) > 13 && (((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
-			{
-				arp_frame = (struct ether_arp *) (buf + 14);
-				printf("Got an arp pkt from host with ip: %u.%u.%u.%u\n", arp_frame->arp_spa[0],
-																	arp_frame->arp_spa[1],
-																	arp_frame->arp_spa[2],
-																	arp_frame->arp_spa[3]);
-			}
+			arp_frame = (struct ether_arp *) (buf + 14);
+			printf("Got an arp pkt from host with ip: %u.%u.%u.%u\n", arp_frame->arp_spa[0],
+																arp_frame->arp_spa[1],
+																arp_frame->arp_spa[2],
+																arp_frame->arp_spa[3]);
 		}
 	}
 	return (0);

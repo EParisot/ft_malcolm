@@ -68,7 +68,7 @@ typedef struct 			s_arp_packet
   unsigned char			target_mac[ETHER_ADDR_LEN];
   unsigned char			target_ip[MAX_ADDR_LEN];
   unsigned char			padding[18];
-}						t_arp_packet;
+}__attribute__((packed))t_arp_packet;
 
 int		ft_malcolm(t_env *env);
 

@@ -53,8 +53,8 @@ typedef struct			s_env
 
 typedef struct 			s_arp_packet
 {
-  u_char				targ_hw_addr[ETHER_ADDR_LEN];
-  u_char				src_hw_addr[ETHER_ADDR_LEN];
+  char					targ_hw_addr[ETHER_ADDR_LEN];
+  char					src_hw_addr[ETHER_ADDR_LEN];
   u_short				frame_type;
   u_short				hw_type;
   u_short				prot_type;

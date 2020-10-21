@@ -102,13 +102,14 @@ t_arp_packet	*build_pkt(t_env *env)
 
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
+	ft_strcpy(pkt->targ_hw_addr, inet_ntoa(env->source_ip->sin_addr));
+	ft_strcpy(pkt->targ_hw_addr, inet_ntoa(env->target_ip->sin_addr));
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
 	pkt->prot_type      = htons(0x0800);
 	pkt->hw_addr_size   = ETHER_ADDR_LEN;
 	pkt->prot_addr_size = MAX_ADDR_LEN;
 	pkt->op             = htons(2);
-	printf("%d\n", ETHER_ADDR_LEN);
 	ft_strcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr));
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	ft_strcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr));

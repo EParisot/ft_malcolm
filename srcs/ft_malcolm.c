@@ -133,8 +133,8 @@ int			ft_malcolm(t_env *env)
 			arp_frame = (struct ether_arp *) (buf + 14);
 			if (ntohs(arp_frame->arp_op) == ARPOP_REQUEST)
 			{
-				if (htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->target_ip->sin_addr.s_addr) &&
-					htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->source_ip->sin_addr.s_addr))
+				if (htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
+					htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr))
 				{
 					printf("Got an arp request for target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfrom ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],

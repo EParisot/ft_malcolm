@@ -77,8 +77,14 @@ static int		init_sock(t_env *env, int proto, int type, int mode)
 		return (-1);
 	}
 	if (mode == ETH_P_ARP)
-		if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out, sizeof(tv_out)) != 0)
+	{
+		if (env->specific == false)
+		{
+			bind(env->sock_fd, INADDR_ANY, sizeof(struct sockaddr));
+		}
+		else if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out, sizeof(tv_out)) != 0)
 			return (-1);
+	}
 	if (env->source_mac == NULL)
 		env->source_mac = env->local_mac;
 	return (0);
@@ -139,8 +145,8 @@ int			ft_malcolm(t_env *env)
 			arp_frame = (struct ether_arp *) (buf + 14);
 			if (ntohs(arp_frame->arp_op) == ARPOP_REQUEST)
 			{
-				if (htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
-					htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr))
+				if (env->specific == false || (htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
+					htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr)))
 				{
 					printf("Got an arp request from target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 						arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],

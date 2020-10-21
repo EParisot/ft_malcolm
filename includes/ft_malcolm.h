@@ -48,6 +48,7 @@ typedef struct			s_env
 	struct sockaddr_in	*target_ip;
 	t_mac				*target_mac;
 	bool				bi_directional;
+	bool				specific;
 	int					sock_fd;
 	char				*iface;
 }						t_env;

@@ -132,7 +132,7 @@ int			ft_malcolm(t_env *env)
 		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
 		{
 			arp_frame = (struct ether_arp *) (buf + 14);
-			if (ntohs(arp_frame->arp_op) == ARPOP_REQUEST)
+			if (ntohs(arp_frame->arp_op) == ARPOP_REPLY)
 			{
 				if (htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
 					htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr))

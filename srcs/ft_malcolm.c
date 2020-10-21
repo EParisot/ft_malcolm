@@ -121,24 +121,28 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5],
 						arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 						arp_frame->arp_sha[0], arp_frame->arp_sha[1], arp_frame->arp_sha[2], arp_frame->arp_sha[3], arp_frame->arp_sha[4], arp_frame->arp_sha[5]);
-					recv(env->sock_fd, buf, buf_size, 0);
-					if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
-					{
-						arp_frame = (struct ether_arp *) (buf + 14);
-						if (ntohs(arp_frame->arp_op) == ARPOP_REQUEST)
-						{
-							if (htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
-								htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr))
-							{
-								printf("Got an arp response for target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfrom ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
-									arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-									arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5],
-									arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-									arp_frame->arp_sha[0], arp_frame->arp_sha[1], arp_frame->arp_sha[2], arp_frame->arp_sha[3], arp_frame->arp_sha[4], arp_frame->arp_sha[5]);
-								break;
-							}
-						}
-					}
+					break;
+				}
+			}
+		}
+	}
+	while (g_stop == false)
+	{
+		recv(env->sock_fd, buf, buf_size, 0);
+		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
+		{
+			arp_frame = (struct ether_arp *) (buf + 14);
+			if (ntohs(arp_frame->arp_op) == ARPOP_REQUEST)
+			{
+				if (htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
+					htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr))
+				{
+					printf("Got an arp response for target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfrom ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
+						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
+						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5],
+						arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
+						arp_frame->arp_sha[0], arp_frame->arp_sha[1], arp_frame->arp_sha[2], arp_frame->arp_sha[3], arp_frame->arp_sha[4], arp_frame->arp_sha[5]);
+					break;
 				}
 			}
 		}

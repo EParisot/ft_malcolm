@@ -110,6 +110,7 @@ t_arp_packet	*build_pkt(t_env *env)
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	ft_strcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr));
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+	ft_bzero(pkt->padding, 18);
 	return (pkt);
 }
 
@@ -118,7 +119,7 @@ int			ft_malcolm(t_env *env)
 	size_t				buf_size = PKT_SIZE;
 	char				buf[buf_size];
 	struct ether_arp 	*arp_frame;
-	t_arp_packet		*pkt;
+	t_arp_packet		*pkt = NULL;
 
 	ft_bzero(buf, buf_size);
 	if (init_sock(env))

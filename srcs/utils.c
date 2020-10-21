@@ -36,6 +36,6 @@ void		print_mac(t_mac *mac)
 
 void		print_init(t_env *env)
 {
-	printf("Listening ARP packets on %s from %s ", env->iface, inet_ntoa(env->source_ip->sin_addr));
-	printf("to %s\n", inet_ntoa(env->target_ip->sin_addr));
+	printf("Listening ARP packets on %s from %s ", env->iface, inet_ntoa(env->target_ip->sin_addr));
+	printf("to %s\n", inet_ntoa(env->source_ip->sin_addr));
 }

@@ -83,7 +83,9 @@ static int		init_sock(t_env *env, int proto, int type, int mode)
 			bind(env->sock_fd, INADDR_ANY, sizeof(struct sockaddr));
 		}
 		if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out, sizeof(tv_out)) != 0)
+		{
 			return (-1);
+		}
 	}
 	if (env->source_mac == NULL)
 		env->source_mac = env->local_mac;

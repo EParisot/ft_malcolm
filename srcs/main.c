@@ -30,6 +30,7 @@ static t_mac				*parse_mac(char *str)
 
 	if ((mac = (t_mac*)malloc(sizeof(t_mac))) == NULL)
 		return (NULL);
+	ft_strcpy(mac->str, str);
 	mac_str = ft_strsplit(str, ':');
 	if ((mac_size = ft_tablen(mac_str)) != 6)
 	{

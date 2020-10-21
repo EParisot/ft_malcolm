@@ -118,6 +118,7 @@ t_arp_packet	*build_pkt(t_env *env)
 	return (pkt);
 }
 
+#include <errno.h>
 int			ft_malcolm(t_env *env)
 {
 	size_t				buf_size = PKT_SIZE;
@@ -163,6 +164,7 @@ int			ft_malcolm(t_env *env)
 			return (-1);
 		if (send(env->sock_fd, pkt, sizeof(pkt), 0) < 0)
 		{
+			printf("%s\n", strerror(errno));
 			free(pkt);
 			return (-1);
 		}

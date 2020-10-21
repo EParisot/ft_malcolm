@@ -119,7 +119,7 @@ t_arp_packet	*build_pkt(t_env *env)
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, 6);
 	ft_memcpy(pkt->target_ip, env->target_ip, 4);
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, 6);
-	ft_bzero(pkt->padding, 18);
+	//ft_bzero(pkt->padding, 18);
 	printf("test : %ld\n", sizeof(*pkt));
 	return (pkt);
 }

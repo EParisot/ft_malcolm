@@ -55,19 +55,19 @@ typedef struct			s_env
 
 typedef struct 			s_arp_packet
 {
-  unsigned char			targ_hw_addr[ETHER_ADDR_LEN];
-  unsigned char			src_hw_addr[ETHER_ADDR_LEN];
-  unsigned short		frame_type;
-  unsigned short		hw_type;
-  unsigned short		prot_type;
-  unsigned char			hw_addr_size;
-  unsigned char			prot_addr_size;
-  unsigned short		op;
-  unsigned char			source_mac[ETHER_ADDR_LEN];
-  unsigned char			source_ip[MAX_ADDR_LEN];
-  unsigned char			target_mac[ETHER_ADDR_LEN];
-  unsigned char			target_ip[MAX_ADDR_LEN];
-  unsigned char			padding[18];
+  uint8_t				targ_hw_addr[ETHER_ADDR_LEN];
+  uint8_t				src_hw_addr[ETHER_ADDR_LEN];
+  uint16_t				frame_type;
+  uint16_t				hw_type;
+  uint16_t				prot_type;
+  uint8_t				hw_addr_size;
+  uint8_t				prot_addr_size;
+  uint16_t				op;
+  uint8_t				source_mac[ETHER_ADDR_LEN];
+  uint32_t				source_ip[MAX_ADDR_LEN];
+  uint8_t				target_mac[ETHER_ADDR_LEN];
+  uint32_t				target_ip[MAX_ADDR_LEN];
+  //unsigned char			padding[18];
 }__attribute__((packed))t_arp_packet;
 
 int		ft_malcolm(t_env *env);

@@ -136,7 +136,7 @@ int			ft_malcolm(t_env *env)
 	ft_bzero(buf, buf_size);
 	if (getlocalhost(env))
 		return (-1);
-	if (init_sock(env, AF_PACKET, SOCK_PACKET, ETH_P_ARP))
+	if (init_sock(env, AF_PACKET, SOCK_RAW, ETH_P_ARP))
 		return (-1);
 	print_init(env);
 	g_stop = false;
@@ -166,7 +166,7 @@ int			ft_malcolm(t_env *env)
 	close(env->sock_fd);
 	if (g_stop == false)
 	{
-		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
+		if (init_sock(env, AF_INET, SOCK_RAW, IPPROTO_RAW))
 			return (-1);
 		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],

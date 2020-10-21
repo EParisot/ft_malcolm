@@ -179,12 +179,14 @@ int			ft_malcolm(t_env *env)
 		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, target_addr, sizeof(struct sockaddr)) < 0)
 		{
 			printf("%s\n", strerror(errno));
+			free(target_addr);
 			close(env->sock_fd);
 			free(pkt);
 			return (-1);
 		}
-		free(pkt);
+		free(target_addr);
 		close(env->sock_fd);
+		free(pkt);
 		printf("Done.\n");
 	}
 	return (0);

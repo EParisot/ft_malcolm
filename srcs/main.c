@@ -140,7 +140,7 @@ static void				clean_env(t_env *env)
 		free(env->source_ip);
 	if (env->target_ip)
 		free(env->target_ip);
-	if (env->source_mac)
+	if (env->source_mac && env->source_mac != env->local_mac)
 		free(env->source_mac);
 	if (env->target_mac)
 		free(env->target_mac);

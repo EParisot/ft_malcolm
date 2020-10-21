@@ -102,18 +102,18 @@ t_arp_packet	*build_pkt(t_env *env)
 
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
-	ft_strcpy(pkt->targ_hw_addr, inet_ntoa(env->source_ip->sin_addr));
-	ft_strcpy(pkt->targ_hw_addr, inet_ntoa(env->target_ip->sin_addr));
+	ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
+	ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
 	pkt->prot_type      = htons(0x0800);
 	pkt->hw_addr_size   = ETHER_ADDR_LEN;
 	pkt->prot_addr_size = MAX_ADDR_LEN;
 	pkt->op             = htons(2);
-	ft_strcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr));
-	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	ft_strcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr));
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+	ft_strcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr));
+	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	ft_bzero(pkt->padding, 18);
 	return (pkt);
 }

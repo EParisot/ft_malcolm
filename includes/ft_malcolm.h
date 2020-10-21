@@ -57,12 +57,12 @@ typedef struct 			s_arp_packet
 {
   unsigned char			targ_hw_addr[ETHER_ADDR_LEN];
   unsigned char			src_hw_addr[ETHER_ADDR_LEN];
-  u_short				frame_type;
-  u_short				hw_type;
-  u_short				prot_type;
+  unsigned short		frame_type;
+  unsigned short		hw_type;
+  unsigned short		prot_type;
   unsigned char			hw_addr_size;
   unsigned char			prot_addr_size;
-  u_short				op;
+  unsigned short		op;
   unsigned char			source_mac[ETHER_ADDR_LEN];
   unsigned char			source_ip[MAX_ADDR_LEN];
   unsigned char			target_mac[ETHER_ADDR_LEN];

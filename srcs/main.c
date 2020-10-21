@@ -85,14 +85,23 @@ static int					parse_opt(t_env *env, int ac, char **av)
 			env->iface = ft_strdup(av[i]);
 			continue;
 		}
+		if (ft_strcmp(opt, "-b") == 0)
+		{
+			env->bi_directional = true;
+			continue;
+		}
 		if ((ip = parse_ip(opt)) == NULL)
 		{
 			if ((mac = parse_mac(opt)) == NULL)
 				return (-1);
 			if (env->source_mac == NULL)
+			{
 				env->source_mac = mac;
+			}
 			else if (env->target_mac == NULL)
+			{
 				env->target_mac = mac;
+			}
 			else
 			{
 				print_usage();
@@ -102,9 +111,13 @@ static int					parse_opt(t_env *env, int ac, char **av)
 		else
 		{
 			if (env->source_ip == NULL)
+			{
 				env->source_ip = ip;
+			}
 			else if (env->target_ip == NULL)
+			{
 				env->target_ip = ip;
+			}
 			else
 			{
 				print_usage();
@@ -154,6 +167,7 @@ int						main(int ac, char **av)
 	env->source_mac = NULL;
 	env->target_ip = NULL;
 	env->target_mac = NULL;
+	env->bi_directional = false;
 	env->sock_fd = 0;
 	env->iface = NULL;
 	if ((ret = parse_opt(env, ac, av)))

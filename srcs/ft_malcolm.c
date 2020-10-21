@@ -122,7 +122,7 @@ int			ft_malcolm(t_env *env)
 	char				buf[buf_size];
 	struct ether_arp 	*arp_frame;
 	t_arp_packet		*pkt = NULL;
-	struct sockaddr 	*target_addr = NULL;
+	struct sockaddr 	*target_addr;
 
 	ft_bzero(buf, buf_size);
 	if (getlocalhost(env))
@@ -168,7 +168,7 @@ int			ft_malcolm(t_env *env)
 			close(env->sock_fd);
 			return (-1);
 		}
-		ft_memcpy(target_addr, (struct sockaddr*)env->target_ip, sizeof(struct sockaddr));
+		target_addr = (struct sockaddr*)env->target_ip;
 		ft_strcpy(target_addr->sa_data, env->iface);
 		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, target_addr, sizeof(struct sockaddr)) < 0)
 		{

@@ -134,7 +134,7 @@ int			ft_malcolm(t_env *env)
 		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 		env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
 		// TODO :
-		// Wait for target ARP response and spoof by sending crafted ARP packet to target and why not to src too !
+		// spoof by sending crafted ARP packet to target and why not to src too !
 	}
 	return (0);
 }

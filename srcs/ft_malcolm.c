@@ -78,8 +78,6 @@ static int		init_sock(t_env *env, int mode)
 	}
 	if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out, sizeof(tv_out)) != 0)
 		return (-1);
-	if (getlocalhost(env))
-		return (-1);
 	if (env->source_mac == NULL)
 		env->source_mac = env->local_mac;
 	return (0);
@@ -126,6 +124,8 @@ int			ft_malcolm(t_env *env)
 
 	ft_bzero(buf, buf_size);
 	if (init_sock(env, ETH_P_ARP))
+		return (-1);
+	if (getlocalhost(env))
 		return (-1);
 	print_init(env);
 	g_stop = false;

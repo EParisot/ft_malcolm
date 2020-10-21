@@ -110,9 +110,9 @@ t_arp_packet	*build_pkt(t_env *env)
 	pkt->hw_addr_size   = ETHER_ADDR_LEN;
 	pkt->prot_addr_size = MAX_ADDR_LEN;
 	pkt->op             = htons(2);
-	ft_strcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr));
+	ft_memcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr), MAX_ADDR_LEN);
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-	ft_strcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr));
+	ft_memcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr), MAX_ADDR_LEN);
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	ft_bzero(pkt->padding, 18);
 	return (pkt);
@@ -162,7 +162,7 @@ int			ft_malcolm(t_env *env)
 		env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
 		if ((pkt = build_pkt(env)) == NULL)
 			return (-1);
-		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, (struct sockaddr *)env->target_ip, (socklen_t)sizeof(struct sockaddr)) < 0)
+		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, (struct sockaddr *)env->target_ip, sizeof(struct sockaddr)) < 0)
 		{
 			printf("%s\n", strerror(errno));
 			free(pkt);

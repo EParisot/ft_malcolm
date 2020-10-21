@@ -61,10 +61,10 @@ typedef struct 			s_arp_packet
   u_char				hw_addr_size;
   u_char				prot_addr_size;
   u_short				op;
-  char					source_mac[ETHER_ADDR_LEN];
-  char					source_ip[MAX_ADDR_LEN];
-  char					target_mac[ETHER_ADDR_LEN];
-  char					target_ip[MAX_ADDR_LEN];
+  u_char					source_mac[ETHER_ADDR_LEN];
+  u_char					source_ip[MAX_ADDR_LEN];
+  u_char					target_mac[ETHER_ADDR_LEN];
+  u_char					target_ip[MAX_ADDR_LEN];
   u_char				padding[18];
 }						t_arp_packet;
 

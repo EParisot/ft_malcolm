@@ -173,6 +173,8 @@ int						main(int ac, char **av)
 	if ((ret = parse_opt(env, ac, av)))
 		return (ret);
 	ret = ft_malcolm(env);
+	if (ret)
+		printf("Spoofing Failed\n");
 	clean_env(env);
 	return (ret);
 }

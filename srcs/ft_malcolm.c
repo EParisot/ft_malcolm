@@ -81,7 +81,11 @@ int			init_sock(t_env *env)
 	if (getlocalhost(env))
 		return (-1);
 	if (env->source_mac == NULL)
+	{
+		if ((env->source_mac = (t_mac*)malloc(sizeof(t_mac))) == NULL)
+			return (-1);
 		env->source_mac = env->local_mac;
+	}
 	printf("ft_malcolm: Spoof MAC : ");
 	print_mac(env->source_mac);
 	return (0);

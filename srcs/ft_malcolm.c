@@ -65,13 +65,13 @@ int			getlocalhost(t_env *env)
 	return (ret);
 }
 
-int			init_sock(t_env *env)
+static int		init_sock(t_env *env, int mode)
 {
 	struct timeval	tv_out;
 
 	tv_out.tv_sec = TIMEOUT;
 	tv_out.tv_usec = 0;
-	if ((env->sock_fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP))) < 0)
+	if ((env->sock_fd = socket(AF_PACKET, SOCK_RAW, htons(mode))) < 0)
 	{
 		printf("ft_malcolm: Error opening Socket.\n");
 		return (-1);
@@ -127,7 +127,7 @@ int			ft_malcolm(t_env *env)
 	t_arp_packet		*pkt = NULL;
 
 	ft_bzero(buf, buf_size);
-	if (init_sock(env))
+	if (init_sock(env, ETH_P_ARP))
 		return (-1);
 	print_init(env);
 	g_stop = false;
@@ -153,8 +153,11 @@ int			ft_malcolm(t_env *env)
 			}
 		}
 	}
+	close(env->sock_fd);
 	if (g_stop == false)
 	{
+		if (init_sock(env, ETH_P_RARP))
+			return (-1);
 		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 		env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
@@ -169,6 +172,7 @@ int			ft_malcolm(t_env *env)
 			return (-1);
 		}
 		free(pkt);
+		close(env->sock_fd);
 		printf("Done.\n");
 	}
 	return (0);

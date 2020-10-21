@@ -155,8 +155,13 @@ int			ft_malcolm(t_env *env)
 		env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
 		if ((pkt = build_pkt(env)) == NULL)
 			return (-1);
-		//sock.sendto(env->sock_fd, );
+		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, (struct sockaddr *)env->target_ip, sizeof(struct sockaddr *)) < 0)
+		{
+			free(pkt);
+			return (-1);
+		}
 		free(pkt);
+		printf("Done.\n");
 	}
 	return (0);
 }

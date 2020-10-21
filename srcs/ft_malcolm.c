@@ -136,7 +136,7 @@ int			ft_malcolm(t_env *env)
 	ft_bzero(buf, buf_size);
 	if (getlocalhost(env))
 		return (-1);
-	if (init_sock(env, AF_PACKET, SOCK_RAW, ETH_P_ARP))
+	if (init_sock(env, AF_PACKET, SOCK_RAW, IPPROTO_RAW))
 		return (-1);
 	print_init(env);
 	g_stop = false;

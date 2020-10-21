@@ -170,7 +170,7 @@ int			ft_malcolm(t_env *env)
 		}
 		target_addr = *(struct sockaddr*)env->target_ip;
 		ft_strcpy(target_addr.sa_data, env->iface);
-		if (sendto(env->sock_fd, pkt, sizeof(t_arp_packet), 0, &target_addr, sizeof(env->target_ip)) < 0)
+		if (sendto(env->sock_fd, pkt, sizeof(t_arp_packet), 0, &target_addr, sizeof(target_addr)) < 0)
 		{
 			printf("%s\n", strerror(errno));
 			close(env->sock_fd);

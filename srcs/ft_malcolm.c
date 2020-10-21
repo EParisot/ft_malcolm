@@ -76,8 +76,9 @@ static int		init_sock(t_env *env, int proto, int type, int mode)
 		printf("ft_malcolm: Error opening Socket.\n");
 		return (-1);
 	}
-	if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out, sizeof(tv_out)) != 0)
-		return (-1);
+	if (mode == ETH_P_ARP)
+		if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out, sizeof(tv_out)) != 0)
+			return (-1);
 	if (env->source_mac == NULL)
 		env->source_mac = env->local_mac;
 	return (0);
@@ -163,8 +164,6 @@ int			ft_malcolm(t_env *env)
 		env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
 		if ((pkt = build_pkt(env)) == NULL)
 			return (-1);
-		
-		print_mac((unsigned char*)pkt->src_hw_addr);
 		
 		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, (struct sockaddr*)env->target_ip, sizeof(struct sockaddr)) < 0)
 		{

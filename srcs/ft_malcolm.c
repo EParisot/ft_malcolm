@@ -97,7 +97,7 @@ t_arp_packet	*build_pkt(t_env *env)
 {
 	t_arp_packet *pkt;
 
-	if ((pkt = (t_arp_packet *)malloc(sizeof(pkt))) == NULL)
+	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);

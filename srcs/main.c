@@ -94,7 +94,7 @@ static int					parse_opt(t_env *env, int ac, char **av)
 		{
 			if ((mac = parse_mac(opt)) == NULL)
 				return (-1);
-			if (env->source_mac == NULL)
+			if (env->target_ip == NULL && env->source_mac == NULL)
 			{
 				env->source_mac = mac;
 			}

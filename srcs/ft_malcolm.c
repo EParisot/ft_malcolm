@@ -82,8 +82,6 @@ static int		init_sock(t_env *env, int mode)
 		return (-1);
 	if (env->source_mac == NULL)
 		env->source_mac = env->local_mac;
-	printf("ft_malcolm: Spoof MAC : ");
-	print_mac(env->source_mac);
 	return (0);
 }
 
@@ -168,6 +166,7 @@ int			ft_malcolm(t_env *env)
 		if (send(env->sock_fd, pkt, sizeof(pkt), 0) < 0)
 		{
 			printf("%s\n", strerror(errno));
+			close(env->sock_fd);
 			free(pkt);
 			return (-1);
 		}

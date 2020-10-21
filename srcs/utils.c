@@ -38,4 +38,6 @@ void		print_init(t_env *env)
 {
 	printf("Listening ARP packets on %s from %s ", env->iface, inet_ntoa(env->target_ip->sin_addr));
 	printf("to %s\n", inet_ntoa(env->source_ip->sin_addr));
+	printf("Spoof MAC : ");
+	print_mac(env->source_mac);
 }

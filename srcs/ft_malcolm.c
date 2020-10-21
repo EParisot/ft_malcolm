@@ -112,8 +112,8 @@ t_arp_packet	*build_pkt(t_env *env)
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
 	pkt->prot_type      = htons(0x0800);
-	pkt->hw_addr_size   = ETHER_ADDR_LEN;
-	pkt->prot_addr_size = MAX_ADDR_LEN;
+	pkt->hw_addr_size   = htons(ETHER_ADDR_LEN);
+	pkt->prot_addr_size = htons(4);
 	pkt->op             = htons(2);
 	ft_memcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr), MAX_ADDR_LEN);
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));

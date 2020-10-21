@@ -99,7 +99,7 @@ t_arp_packet	*build_pkt(t_env *env)
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
 	ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
-	ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+	ft_memcpy(pkt->src_hw_addr, env->local_mac->bytes, sizeof(env->local_mac->bytes));
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
 	pkt->prot_type      = htons(0x0800);

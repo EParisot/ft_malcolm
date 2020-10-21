@@ -22,11 +22,11 @@ void		print_usage()
 	tgt_MAC: target MAC (XX:XX:XX:XX:XX:XX)\n");
 }
 
-void		print_mac(t_mac *mac)
+void		print_mac(unsigned char *mac)
 {
 	for (int i = 0; i < 6; i++)
 	{
-		printf("%02x", mac->bytes[i]);
+		printf("%02x", mac[i]);
 		if (i < 5)
 			printf(":");
 		else
@@ -39,5 +39,5 @@ void		print_init(t_env *env)
 	printf("Listening ARP packets on %s from %s ", env->iface, inet_ntoa(env->target_ip->sin_addr));
 	printf("to %s\n", inet_ntoa(env->source_ip->sin_addr));
 	printf("Spoof MAC : ");
-	print_mac(env->source_mac);
+	print_mac(env->source_mac->bytes);
 }

@@ -98,10 +98,8 @@ t_arp_packet	*build_pkt(t_env *env)
 
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
-	for (int i = 0; i < 6; i++)
-		pkt->targ_hw_addr[i] = env->target_mac->bytes[i];
-	for (int i = 0; i < 6; i++)
-		pkt->src_hw_addr[i] = env->source_mac->bytes[i];
+	ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, ETHER_ADDR_LEN);
+	ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, ETHER_ADDR_LEN);
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
 	pkt->prot_type      = htons(0x0800);
@@ -166,7 +164,7 @@ int			ft_malcolm(t_env *env)
 		if ((pkt = build_pkt(env)) == NULL)
 			return (-1);
 		
-		printf("tgt addr : %s\n", (char*)pkt->src_hw_addr);
+		print_mac((unsigned char*)pkt->src_hw_addr);
 		
 		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, (struct sockaddr*)env->target_ip, sizeof(struct sockaddr)) < 0)
 		{

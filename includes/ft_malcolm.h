@@ -73,6 +73,6 @@ int		ft_malcolm(t_env *env);
 
 void	print_usage(void);
 void	print_init(t_env *env);
-void	print_mac(t_mac *mac);
+void	print_mac(unsigned char *mac);
 
 #endif

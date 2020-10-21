@@ -35,7 +35,7 @@ bool g_stop;
 
 typedef struct			s_mac
 {
-   unsigned char 		bytes[6];
+   unsigned char 		bytes[7];
 }						t_mac;
 
 typedef struct			s_env

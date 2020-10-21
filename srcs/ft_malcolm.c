@@ -98,8 +98,8 @@ t_arp_packet	*build_pkt(t_env *env)
 
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
-	ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, ETHER_ADDR_LEN);
-	ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, ETHER_ADDR_LEN);
+	ft_strcpy(pkt->targ_hw_addr, env->target_mac->str);
+	ft_strcpy(pkt->src_hw_addr, env->source_mac->str);
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
 	pkt->prot_type      = htons(0x0800);
@@ -107,9 +107,9 @@ t_arp_packet	*build_pkt(t_env *env)
 	pkt->prot_addr_size = MAX_ADDR_LEN;
 	pkt->op             = htons(2);
 	ft_memcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr), MAX_ADDR_LEN);
-	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+	ft_strcpy(pkt->source_mac, env->source_mac->str);
 	ft_memcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr), MAX_ADDR_LEN);
-	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
+	ft_strcpy(pkt->target_mac, env->target_mac->str);
 	ft_bzero(pkt->padding, 18);
 	return (pkt);
 }
@@ -164,7 +164,7 @@ int			ft_malcolm(t_env *env)
 		if ((pkt = build_pkt(env)) == NULL)
 			return (-1);
 		
-		printf("tgt addr : %s\n", pkt->src_hw_addr);
+		printf("tgt addr : %s\n", (char*)pkt->src_hw_addr);
 		
 		if (sendto(env->sock_fd, pkt, sizeof(pkt), 0, (struct sockaddr*)env->target_ip, sizeof(struct sockaddr)) < 0)
 		{

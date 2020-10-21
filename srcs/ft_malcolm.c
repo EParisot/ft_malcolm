@@ -123,9 +123,9 @@ int			ft_malcolm(t_env *env)
 	t_arp_packet		*pkt = NULL;
 
 	ft_bzero(buf, buf_size);
-	if (init_sock(env, ETH_P_ARP))
-		return (-1);
 	if (getlocalhost(env))
+		return (-1);
+	if (init_sock(env, ETH_P_ARP))
 		return (-1);
 	print_init(env);
 	g_stop = false;

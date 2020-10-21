@@ -77,6 +77,8 @@ int			init_sock(t_env *env)
 		return (-1);
 	if (getlocalhost(env))
 		return (-1);
+	if (env->source_mac == NULL)
+		env->source_mac = env->local_mac;
 	return (0);
 }
 
@@ -128,7 +130,7 @@ int			ft_malcolm(t_env *env)
 		arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 		arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5],
 		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-		env->local_mac->bytes[0], env->local_mac->bytes[1], env->local_mac->bytes[2], env->local_mac->bytes[3], env->local_mac->bytes[4], env->local_mac->bytes[5]);
+		env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
 		// TODO :
 		// Wait for target ARP response and spoof by sending crafted ARP packet to target and why not to src too !
 	}

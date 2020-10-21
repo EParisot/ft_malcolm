@@ -107,9 +107,9 @@ t_arp_packet	*build_pkt(t_env *env)
 	pkt->op             = htons(2);
 	printf("%d\n", ETHER_ADDR_LEN);
 	ft_strcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr));
-	sprintf(pkt->target_mac, "%20x:%20x:%20x:%20x:%20x:%20x", env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5]);
+	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	ft_strcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr));
-	sprintf(pkt->source_mac, "%20x:%20x:%20x:%20x:%20x:%20x", env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
+	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
 	return (pkt);
 }
 

@@ -46,19 +46,22 @@ int			getlocalhost(t_env *env)
 		ret = -1;
 	}
     freeifaddrs(id);
-	if (getifaddrs(&id) == -1)
-        return (-1);
-	if ((env->local_mac = (t_mac*)malloc(sizeof(t_mac))) == NULL)
-		return (-1);
-	for (ifa = id; ifa != NULL; ifa = ifa->ifa_next)
-    {
-		if (strcmp(ifa->ifa_name, env->iface) == 0 && (ifa->ifa_addr->sa_family == AF_PACKET))
+	if (ret == 0)
+	{
+		if (getifaddrs(&id) == -1)
+			return (-1);
+		if ((env->local_mac = (t_mac*)malloc(sizeof(t_mac))) == NULL)
+			return (-1);
+		for (ifa = id; ifa != NULL; ifa = ifa->ifa_next)
 		{
-			struct sockaddr_ll *s = (struct sockaddr_ll*)ifa->ifa_addr;
-			ft_memcpy(env->local_mac->bytes, s->sll_addr, 6);
+			if (strcmp(ifa->ifa_name, env->iface) == 0 && (ifa->ifa_addr->sa_family == AF_PACKET))
+			{
+				struct sockaddr_ll *s = (struct sockaddr_ll*)ifa->ifa_addr;
+				ft_memcpy(env->local_mac->bytes, s->sll_addr, sizeof(s->sll_addr));
+			}
 		}
+		freeifaddrs(id);
 	}
-	freeifaddrs(id);
 	return (ret);
 }
 
@@ -78,7 +81,7 @@ int			init_sock(t_env *env)
 	if (getlocalhost(env))
 		return (-1);
 	if (env->source_mac == NULL)
-		env->source_mac = env->local_mac;
+		ft_memcpy(env->source_mac, env->local_mac, sizeof(env->local_mac));
 	printf("ft_malcolm: Spoof MAC : ");
 	print_mac(env->source_mac);
 	return (0);

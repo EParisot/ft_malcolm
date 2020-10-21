@@ -79,7 +79,7 @@ int			init_sock(t_env *env)
 		return (-1);
 	if (env->source_mac == NULL)
 		env->source_mac = env->local_mac;
-	printf("ft_malcolm: Spoof MAC : \n");
+	printf("ft_malcolm: Spoof MAC : ");
 	print_mac(env->source_mac);
 	return (0);
 }

@@ -130,8 +130,6 @@ static int					parse_opt(t_env *env, int ac, char **av)
 
 static void				clean_env(t_env *env)
 {
-	if (env->sock_fd)
-		close(env->sock_fd);
 	if (env->localhost)
 		free(env->localhost);
 	if (env->local_mac)

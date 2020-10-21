@@ -93,11 +93,31 @@ void		sig_handler(int num_sig)
 	}
 }
 
+t_arp_packet	*build_pkt(t_env *env)
+{
+	t_arp_packet *pkt;
+
+	if ((pkt = (t_arp_packet *)malloc(sizeof(pkt))) == NULL)
+		return (NULL);
+	pkt->frame_type     = htons(0x0806);
+	pkt->hw_type        = htons(1);
+	pkt->prot_type      = htons(0x0800);
+	pkt->hw_addr_size   = ETHER_ADDR_LEN;
+	pkt->prot_addr_size = MAX_ADDR_LEN;
+	pkt->op             = htons(2);
+	ft_strcpy(pkt->target_ip, inet_ntoa(env->target_ip->sin_addr));
+	sprintf(pkt->target_mac, "%20x:%20x:%20x:%20x:%20x:%20x", env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5]);
+	ft_strcpy(pkt->source_ip, inet_ntoa(env->source_ip->sin_addr));
+	sprintf(pkt->source_mac, "%20x:%20x:%20x:%20x:%20x:%20x", env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5]);
+	return (pkt);
+}
+
 int			ft_malcolm(t_env *env)
 {
-	size_t	buf_size = PKT_SIZE;
-	char	buf[buf_size];
-	struct ether_arp *arp_frame;
+	size_t				buf_size = PKT_SIZE;
+	char				buf[buf_size];
+	struct ether_arp 	*arp_frame;
+	t_arp_packet		*pkt;
 
 	ft_bzero(buf, buf_size);
 	if (init_sock(env))
@@ -133,8 +153,10 @@ int			ft_malcolm(t_env *env)
 		arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5],
 		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 		env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-		// TODO :
-		// spoof by sending crafted ARP packet to target and why not to src too !
+		if ((pkt = build_pkt(env)) == NULL)
+			return (-1);
+		//sock.sendto(env->sock_fd, );
+		free(pkt);
 	}
 	return (0);
 }

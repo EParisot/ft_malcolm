@@ -64,9 +64,9 @@ typedef struct 			s_arp_packet
   uint8_t				prot_addr_size;
   uint16_t				op;
   uint8_t				source_mac[ETHER_ADDR_LEN];
-  uint32_t				source_ip[MAX_ADDR_LEN];
+  uint32_t				source_ip;
   uint8_t				target_mac[ETHER_ADDR_LEN];
-  uint32_t				target_ip[MAX_ADDR_LEN];
+  uint32_t				target_ip;
   //unsigned char			padding[18];
 }__attribute__((packed))t_arp_packet;
 

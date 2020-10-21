@@ -115,9 +115,9 @@ t_arp_packet	*build_pkt(t_env *env)
 	pkt->hw_addr_size   = htons(6);
 	pkt->prot_addr_size = htons(4);
 	pkt->op             = htons(2);
-	ft_memcpy(pkt->source_ip, env->source_ip, 4);
+	pkt->source_ip = env->source_ip->sin_addr.s_addr;
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-	ft_memcpy(pkt->target_ip, env->target_ip, 4);
+	pkt->target_ip = env->target_ip->sin_addr.s_addr;
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	//ft_bzero(pkt->padding, 18);
 	printf("test : %ld\n", sizeof(*pkt));

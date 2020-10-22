@@ -112,8 +112,8 @@ t_arp_packet	*build_pkt(uint8_t *spa, uint8_t *tpa, uint8_t *sha, uint8_t *tha, 
 	ft_bzero(pkt, sizeof(pkt));
 	if (rev == false)
 	{
-		ft_memcpy(pkt->targ_hw_addr, sha, ETHER_ADDR_LEN);
-		ft_memcpy(pkt->src_hw_addr, tha, ETHER_ADDR_LEN);
+		ft_memcpy(pkt->targ_hw_addr, tha, ETHER_ADDR_LEN);
+		ft_memcpy(pkt->src_hw_addr, sha, ETHER_ADDR_LEN);
 	}
 	else
 	{

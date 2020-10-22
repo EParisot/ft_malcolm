@@ -180,7 +180,7 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (env->specific == false)
-					{
+					{printf("oups\n");
 						ft_memcpy(&env->source_ip->sin_addr.s_addr, arp_frame->arp_tpa, sizeof(arp_frame->arp_tpa));
 					}
 					if (g_stop == false)

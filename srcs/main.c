@@ -34,7 +34,7 @@ static t_mac				*parse_mac(char *str)
 	mac_str = ft_strsplit(str, ':');
 	if ((mac_size = ft_tablen(mac_str)) != 6)
 	{
-		printf("ft_malcolm: Error in MAC address %s\n", str);
+		printf("ft_malcolm: Error in address %s\n", str);
 		free_mac(mac_str);
 		return (NULL);
 	}

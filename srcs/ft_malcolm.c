@@ -124,11 +124,11 @@ t_arp_packet	*build_pkt(t_env *env)
 	printf("test : %ld\n", sizeof(*pkt));
 	printf("targ_hw_addr :");
 	for (int i = 0; i < 6; i++)
-		printf("%20x ", pkt->targ_hw_addr[i]);
+		printf("%02x ", pkt->targ_hw_addr[i]);
 	printf("\n");
 	printf("src_hw_addr :");
 	for (int i = 0; i < 6; i++)
-		printf("%20x ", pkt->src_hw_addr[i]);
+		printf("%02x ", pkt->src_hw_addr[i]);
 	printf("\n");
 	
 	return (pkt);

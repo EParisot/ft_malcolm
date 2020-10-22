@@ -248,9 +248,9 @@ int			ft_malcolm(t_env *env)
 				free(pkt);
 				return (-1);
 			}
+			free(pkt);
 		}
 		close(env->sock_fd);
-		free(pkt);
 		printf("Done.\n");
 	}
 	return (0);

@@ -120,19 +120,6 @@ t_arp_packet	*build_pkt(t_env *env)
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
 	pkt->target_ip = htonl(env->target_ip->sin_addr.s_addr);
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
-
-	printf("test : %ld\n", sizeof(*pkt));
-	printf("source_mac :");
-	for (int i = 0; i < 6; i++)
-		printf("%02x ", pkt->source_mac[i]);
-	printf("\n");
-	printf("src_ip : %d\n", pkt->source_ip);
-	printf("target_mac :");
-	for (int i = 0; i < 6; i++)
-		printf("%02x ", pkt->target_mac[i]);
-	printf("\n");
-	printf("targt_ip : %d\n", pkt->target_ip);
-	
 	return (pkt);
 }
 
@@ -177,7 +164,7 @@ int			ft_malcolm(t_env *env)
 	close(env->sock_fd);
 	if (g_stop == false)
 	{
-		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_ARP))
+		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
 			return (-1);
 		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
@@ -191,7 +178,7 @@ int			ft_malcolm(t_env *env)
 		}
 		target_addr = *(struct sockaddr*)env->target_ip;
 		ft_strcpy(target_addr.sa_data, env->iface);
-		if (sendto(env->sock_fd, pkt, sizeof(t_arp_packet), 0, &target_addr, sizeof(target_addr)) < 0)
+		if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
 		{
 			close(env->sock_fd);
 			free(pkt);

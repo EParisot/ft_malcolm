@@ -226,23 +226,26 @@ int			ft_malcolm(t_env *env)
 			free(pkt);
 			return (-1);
 		}
-		printf("Sending spoofed ARP reply to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
-			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-			0, 0, 0, 0, 0, 0,
-			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-		if ((pkt = build_pkt(env, true)) == NULL)
+		if (env->bi_directional == true)
 		{
-			close(env->sock_fd);
-			return (-1);
-		}
-		target_addr = *(struct sockaddr*)env->target_ip;
-		ft_strcpy(target_addr.sa_data, env->iface);
-		if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
-		{
-			close(env->sock_fd);
-			free(pkt);
-			return (-1);
+			printf("Sending spoofed ARP reply to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
+				arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
+				0, 0, 0, 0, 0, 0,
+				arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
+				env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
+			if ((pkt = build_pkt(env, true)) == NULL)
+			{
+				close(env->sock_fd);
+				return (-1);
+			}
+			target_addr = *(struct sockaddr*)env->target_ip;
+			ft_strcpy(target_addr.sa_data, env->iface);
+			if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
+			{
+				close(env->sock_fd);
+				free(pkt);
+				return (-1);
+			}
 		}
 		close(env->sock_fd);
 		free(pkt);

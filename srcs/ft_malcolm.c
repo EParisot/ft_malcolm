@@ -152,6 +152,7 @@ int			ft_malcolm(t_env *env)
 	struct ether_arp	*resp_arp_frame;
 	t_arp_packet		*pkt = NULL;
 	struct sockaddr 	target_addr;
+	bool				done = false;
 
 	ft_bzero(buf, buf_size);
 	if (getlocalhost(env))
@@ -161,7 +162,7 @@ int			ft_malcolm(t_env *env)
 	print_init(env);
 	g_stop = false;
 	signal(SIGINT, sig_handler);
-	while (g_stop == false)
+	while (g_stop == false && done == false)
 	{
 		recv(env->sock_fd, buf, buf_size, 0);
 		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
@@ -195,6 +196,7 @@ int			ft_malcolm(t_env *env)
 										resp_arp_frame->arp_sha[0], resp_arp_frame->arp_sha[1], resp_arp_frame->arp_sha[2], resp_arp_frame->arp_sha[3], resp_arp_frame->arp_sha[4], resp_arp_frame->arp_sha[5],
 										resp_arp_frame->arp_tpa[0], resp_arp_frame->arp_tpa[1], resp_arp_frame->arp_tpa[2], resp_arp_frame->arp_tpa[3],
 										resp_arp_frame->arp_tha[0], resp_arp_frame->arp_tha[1], resp_arp_frame->arp_tha[2], resp_arp_frame->arp_tha[3], resp_arp_frame->arp_tha[4], resp_arp_frame->arp_tha[5]);
+									done = true;
 									break;
 								}
 							}

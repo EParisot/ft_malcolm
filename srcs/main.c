@@ -56,9 +56,9 @@ static struct sockaddr_in	*parse_ip(char *str)
 {
 	struct sockaddr_in	*sa;
 
-	//if (inet_addr(str) == INADDR_NONE)
-	//	return (NULL);
 	if ((str = dns_lookup(str)) == NULL)
+		return (NULL);
+	if (inet_addr(str) == INADDR_NONE)
 		return (NULL);
 	if ((sa = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL)
 		return (NULL);

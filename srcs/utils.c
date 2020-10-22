@@ -14,12 +14,15 @@
 
 void		print_usage()
 {
-	printf("usage: ./ft_malcolm [-i iface] src_IP src_MAC tgt_IP tgt_MAC\n\
+	printf("usage: ./ft_malcolm src_IP src_MAC tgt_IP tgt_MAC [-i iface] [-t sec] [-s] [-b]\n\
 	iface:   network interface (str)\n\
 	src_IP:  host IP (XXX.XXX.XXX.XXX or hostname))\n\
 	src_MAC: host MAC (XX:XX:XX:XX:XX:XX)\n\
 	tgt_IP:  target IP (XXX.XXX.XXX.XXX or hostname)\n\
-	tgt_MAC: target MAC (XX:XX:XX:XX:XX:XX)\n");
+	tgt_MAC: target MAC (XX:XX:XX:XX:XX:XX)\n\
+	-t sec:  timeout seconds to wait for reply\n\
+	-s:      wait for specific IP source\n\
+	-b:      send bi-directional spoof\n");
 }
 
 void		print_mac(unsigned char *mac)

@@ -86,6 +86,12 @@ static int					parse_opt(t_env *env, int ac, char **av)
 			env->iface = ft_strdup(av[i]);
 			continue;
 		}
+		if (ft_strcmp(opt, "-t") == 0)
+		{
+			i++;
+			env->timeout = ft_atoi(av[i]);
+			continue;
+		}
 		if (ft_strcmp(opt, "-b") == 0)
 		{
 			env->bi_directional = true;
@@ -165,6 +171,7 @@ int						main(int ac, char **av)
 	}
 	if ((env = (t_env*)malloc(sizeof(t_env))) == NULL)
 		return (-1);
+	env->timeout = TIMEOUT;
 	env->localhost = NULL;
 	env->local_mac = NULL;
 	env->source_ip = NULL;

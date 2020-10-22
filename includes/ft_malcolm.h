@@ -41,6 +41,7 @@ typedef struct			s_mac
 
 typedef struct			s_env
 {
+	int					timeout;
 	struct sockaddr_in	*localhost;
 	t_mac				*local_mac;
 	struct sockaddr_in	*source_ip;

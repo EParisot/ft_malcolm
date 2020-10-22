@@ -171,8 +171,7 @@ int			ft_malcolm(t_env *env)
 			if (ntohs(arp_frame->arp_op) == ARPOP_REQUEST)
 			{
 				if ((env->specific == false && htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr)) || \
-					(env->specific == true && htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
-					htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr)))
+					(env->specific == true && htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) && htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr)))
 				{
 					printf("Got an ARP REQUEST from target with IP: %u.%u.%u.%u - MAC: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor IP: %u.%u.%u.%u - MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 						arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],

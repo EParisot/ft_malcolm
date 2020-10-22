@@ -182,9 +182,8 @@ int			ft_malcolm(t_env *env)
 					if (g_stop == false)
 					{
 						recv(env->sock_fd, buf, buf_size, 0);
-						printf("test \n");
 						if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
-						{
+						{						printf("test \n");
 							resp_arp_frame = (struct ether_arp *) (buf + 14);
 							if (ntohs(resp_arp_frame->arp_op) == ARPOP_REPLY)
 							{

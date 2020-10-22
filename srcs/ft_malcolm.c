@@ -166,7 +166,7 @@ int			ft_malcolm(t_env *env)
 	close(env->sock_fd);
 	if (g_stop == false)
 	{
-		if (init_sock(env, AF_INET, SOCK_RAW, ETH_P_RARP))
+		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
 			return (-1);
 		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],

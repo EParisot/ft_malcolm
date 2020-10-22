@@ -180,7 +180,7 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (env->specific == false)
-					{printf("oups\n");
+					{
 						ft_memcpy(&env->source_ip->sin_addr.s_addr, arp_frame->arp_tpa, sizeof(arp_frame->arp_tpa));
 					}
 					if (g_stop == false)
@@ -191,9 +191,9 @@ int			ft_malcolm(t_env *env)
 							resp_arp_frame = (struct ether_arp *) (buf + 14);
 							if (ntohs(resp_arp_frame->arp_op) == ARPOP_REPLY)
 							{
-								if ((env->specific == false && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(env->target_ip->sin_addr.s_addr)) || \
-									(env->specific == true && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(env->target_ip->sin_addr.s_addr) &&
-									htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(env->source_ip->sin_addr.s_addr)))
+								if ((env->specific == false && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(*(uint32_t*)arp_frame->arp_spa)) || \
+									(env->specific == true && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(*(uint32_t*)arp_frame->arp_spa) &&
+									htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(*(uint32_t*)arp_frame->arp_tpa)))
 								{
 									printf("Got an ARP reply from source with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 										resp_arp_frame->arp_spa[0], resp_arp_frame->arp_spa[1], resp_arp_frame->arp_spa[2], resp_arp_frame->arp_spa[3],
@@ -219,7 +219,7 @@ int			ft_malcolm(t_env *env)
 			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5],
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-			env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5]);
+			0, 0, 0, 0, 0, 0);
 		if ((pkt = build_pkt(env, false)) == NULL)
 		{
 			close(env->sock_fd);

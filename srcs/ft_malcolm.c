@@ -195,7 +195,7 @@ int			ft_malcolm(t_env *env)
 									(env->specific == true && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(env->target_ip->sin_addr.s_addr) &&
 									htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(env->source_ip->sin_addr.s_addr)))
 								{
-									printf("Got an ARP reply from target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
+									printf("Got an ARP reply from source with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 										resp_arp_frame->arp_spa[0], resp_arp_frame->arp_spa[1], resp_arp_frame->arp_spa[2], resp_arp_frame->arp_spa[3],
 										resp_arp_frame->arp_sha[0], resp_arp_frame->arp_sha[1], resp_arp_frame->arp_sha[2], resp_arp_frame->arp_sha[3], resp_arp_frame->arp_sha[4], resp_arp_frame->arp_sha[5],
 										resp_arp_frame->arp_tpa[0], resp_arp_frame->arp_tpa[1], resp_arp_frame->arp_tpa[2], resp_arp_frame->arp_tpa[3],

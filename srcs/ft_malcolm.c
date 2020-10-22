@@ -167,6 +167,7 @@ int			ft_malcolm(t_env *env)
 	while (g_stop == false && done == false)
 	{
 		recv(env->sock_fd, buf, buf_size, 0);
+		recv(env->sock_fd, resp_buf, buf_size, 0);
 		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
 		{
 			arp_frame = (struct ether_arp *) (buf + 14);
@@ -182,7 +183,7 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (g_stop == false)
 					{
-						recv(env->sock_fd, resp_buf, buf_size, 0);
+						
 						if ((((resp_buf[12]) << 8) + resp_buf[13]) == ETH_P_ARP)
 						{
 							resp_arp_frame = (struct ether_arp *) (resp_buf + 14);

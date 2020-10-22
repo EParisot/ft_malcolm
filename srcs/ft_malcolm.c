@@ -122,14 +122,16 @@ t_arp_packet	*build_pkt(t_env *env)
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 
 	printf("test : %ld\n", sizeof(*pkt));
-	printf("targ_hw_addr :");
+	printf("source_mac :");
 	for (int i = 0; i < 6; i++)
 		printf("%02x ", pkt->source_mac[i]);
 	printf("\n");
-	printf("src_hw_addr :");
+	printf("src_ip : %d\n", pkt->source_ip);
+	printf("target_mac :");
 	for (int i = 0; i < 6; i++)
 		printf("%02x ", pkt->target_mac[i]);
 	printf("\n");
+	printf("targt_ip : %d\n", pkt->target_ip);
 	
 	return (pkt);
 }

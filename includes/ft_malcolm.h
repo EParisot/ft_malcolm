@@ -22,6 +22,7 @@
 # include <sys/types.h>
 # include <ifaddrs.h>
 # include <netinet/if_ether.h>
+# include <netdb.h>
 # include <arpa/inet.h>
 # include <netinet/ip.h>
 # include <sys/socket.h>
@@ -76,5 +77,6 @@ int		ft_malcolm(t_env *env);
 void	print_usage(void);
 void	print_init(t_env *env);
 void	print_mac(unsigned char *mac);
+char	*dns_lookup(char *addr);
 
 #endif

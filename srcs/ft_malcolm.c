@@ -231,24 +231,32 @@ int			ft_malcolm(t_env *env)
 		free(pkt);
 		if (env->bi_directional == true)
 		{
-			printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
-				arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-				arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-				env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-			if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, arp_frame->arp_sha, true)) == NULL)
+			if (done == true)
 			{
-				close(env->sock_fd);
-				return (-1);
-			}
-			target_addr = *(struct sockaddr*)env->target_ip;
-			ft_strcpy(target_addr.sa_data, env->iface);
-			if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
-			{
-				close(env->sock_fd);
+				printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
+					arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
+					arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
+					env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
+				if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, resp_arp_frame->arp_sha, true)) == NULL)
+				{
+					close(env->sock_fd);
+					return (-1);
+				}
+				target_addr = *(struct sockaddr*)env->target_ip;
+				ft_strcpy(target_addr.sa_data, env->iface);
+				if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
+				{
+					close(env->sock_fd);
+					free(pkt);
+					return (-1);
+				}
 				free(pkt);
-				return (-1);
 			}
-			free(pkt);
+			else
+			{
+				printf("REPLY not received. Reverse Spoofing can't be established.\n");
+			}
+			
 		}
 		close(env->sock_fd);
 		printf("Done.\n");

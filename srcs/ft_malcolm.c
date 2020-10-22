@@ -138,7 +138,7 @@ t_arp_packet	*build_pkt(t_env *env, bool rev)
 		pkt->target_ip = env->source_ip->sin_addr.s_addr;
 		t_mac empty_mac;
 		ft_bzero(&empty_mac, sizeof(empty_mac));
-		ft_memcpy(pkt->source_mac, &empty_mac, sizeof(env->target_mac->bytes));
+		ft_memcpy(pkt->target_mac, &empty_mac, sizeof(env->target_mac->bytes));
 	}
 	ft_bzero(pkt->padding, 18);
 	return (pkt);
@@ -228,7 +228,7 @@ int			ft_malcolm(t_env *env)
 		}
 		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-			env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
+			0, 0, 0, 0, 0, 0,
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
 		if ((pkt = build_pkt(env, true)) == NULL)

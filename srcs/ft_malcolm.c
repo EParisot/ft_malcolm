@@ -123,7 +123,7 @@ t_arp_packet	*build_pkt(t_env *env, bool rev)
 	pkt->prot_type      = htons(0x0800);
 	pkt->hw_addr_size   = 6;
 	pkt->prot_addr_size = 4;
-	pkt->op             = htons(2);
+	pkt->op             = htons(ARPOP_REPLY);
 	if (rev == false)
 	{
 		pkt->source_ip = env->source_ip->sin_addr.s_addr;

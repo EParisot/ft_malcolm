@@ -116,12 +116,20 @@ t_arp_packet	*build_pkt(t_env *env)
 	pkt->hw_addr_size   = htons(6);
 	pkt->prot_addr_size = htons(4);
 	pkt->op             = htons(2);
-	pkt->source_ip = htonl(env->source_ip->sin_addr.s_addr);
+	pkt->source_ip = inet_addr(inet_ntoa(env->source_ip->sin_addr));
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-	pkt->target_ip = htonl(env->target_ip->sin_addr.s_addr);
+	pkt->target_ip = inet_addr(inet_ntoa(env->target_ip->sin_addr));
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 
 	printf("test : %ld\n", sizeof(*pkt));
+	printf("targ_hw_addr :");
+	for (int i = 0; i < 6; i++)
+		printf("%d ", pkt->targ_hw_addr[i]);
+	printf("\n");
+	printf("src_hw_addr :");
+	for (int i = 0; i < 6; i++)
+		printf("%d ", pkt->src_hw_addr[i]);
+	printf("\n");
 	
 	return (pkt);
 }

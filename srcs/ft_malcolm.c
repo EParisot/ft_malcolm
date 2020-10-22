@@ -233,6 +233,7 @@ int			ft_malcolm(t_env *env)
 			free(pkt);
 			return (-1);
 		}
+		free(pkt);
 		if (env->bi_directional == true)
 		{
 			printf("Sending spoofed ARP reply with ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",

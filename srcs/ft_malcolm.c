@@ -129,6 +129,7 @@ int			ft_malcolm(t_env *env)
 	size_t				buf_size = PKT_SIZE;
 	char				buf[buf_size];
 	struct ether_arp 	*arp_frame;
+	struct ether_arp	*resp_arp_frame;
 	t_arp_packet		*pkt = NULL;
 	struct sockaddr 	target_addr;
 
@@ -157,7 +158,27 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_sha[0], arp_frame->arp_sha[1], arp_frame->arp_sha[2], arp_frame->arp_sha[3], arp_frame->arp_sha[4], arp_frame->arp_sha[5],
 						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
-					break;
+					
+					recv(env->sock_fd, buf, buf_size, 0);
+					if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
+					{
+						resp_arp_frame = (struct ether_arp *) (buf + 14);
+						if (ntohs(resp_arp_frame->arp_op) == ARPOP_REQUEST)
+						{
+							if ((env->specific == false && htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr)) || \
+								(env->specific == true && htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
+								htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr)))
+							{
+								printf("Got an arp reply from target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
+									resp_arp_frame->arp_spa[0], resp_arp_frame->arp_spa[1], resp_arp_frame->arp_spa[2], resp_arp_frame->arp_spa[3],
+									resp_arp_frame->arp_sha[0], resp_arp_frame->arp_sha[1], resp_arp_frame->arp_sha[2], resp_arp_frame->arp_sha[3], resp_arp_frame->arp_sha[4], resp_arp_frame->arp_sha[5],
+									resp_arp_frame->arp_tpa[0], resp_arp_frame->arp_tpa[1], resp_arp_frame->arp_tpa[2], resp_arp_frame->arp_tpa[3],
+									resp_arp_frame->arp_tha[0], resp_arp_frame->arp_tha[1], resp_arp_frame->arp_tha[2], resp_arp_frame->arp_tha[3], resp_arp_frame->arp_tha[4], resp_arp_frame->arp_tha[5]);
+								break;
+							}
+						}
+					}
+					
 				}
 			}
 		}

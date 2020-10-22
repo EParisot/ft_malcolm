@@ -176,6 +176,7 @@ int			ft_malcolm(t_env *env)
 				if ((env->specific == false && htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr)) || \
 					(env->specific == true && htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) && htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr)))
 				{
+					recv(env->sock_fd, resp_buf, buf_size, 0);
 					printf("Got an ARP REQUEST from target with IP: %u.%u.%u.%u - MAC: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor IP: %u.%u.%u.%u - MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 						arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 						arp_frame->arp_sha[0], arp_frame->arp_sha[1], arp_frame->arp_sha[2], arp_frame->arp_sha[3], arp_frame->arp_sha[4], arp_frame->arp_sha[5],
@@ -183,7 +184,7 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (g_stop == false)
 					{
-						recv(env->sock_fd, resp_buf, buf_size, 0);
+						
 						if ((((resp_buf[12]) << 8) + resp_buf[13]) == ETH_P_ARP)
 						{
 							resp_arp_frame = (struct ether_arp *) (resp_buf + 14);

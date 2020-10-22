@@ -53,7 +53,7 @@ typedef struct			s_env
 	char				*iface;
 }						t_env;
 
-typedef struct 			s_arp_packet
+typedef struct __attribute__((packed)) s_arp_packet
 {
   uint8_t				targ_hw_addr[ETHER_ADDR_LEN];
   uint8_t				src_hw_addr[ETHER_ADDR_LEN];
@@ -67,7 +67,7 @@ typedef struct 			s_arp_packet
   uint32_t				source_ip;
   uint8_t				target_mac[ETHER_ADDR_LEN];
   uint32_t				target_ip;
-}__attribute__((packed))t_arp_packet;
+}						t_arp_packet;
 
 int		ft_malcolm(t_env *env);
 

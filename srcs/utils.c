@@ -123,8 +123,6 @@ char	*dns_lookup(char *addr)
 	struct addrinfo *result;
 	char			*str_res;
 
-	if ((str_res = (char *)malloc(INET_ADDRSTRLEN)) == NULL)
-		return (NULL);
 	result = NULL;
 	set_addr_info_struct(&hints);
 	if (dns_err(addr, &hints, &result) == -1)

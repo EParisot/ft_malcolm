@@ -181,8 +181,7 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (env->specific == false)
 					{
-						env->source_ip->sin_addr.s_addr = *arp_frame->arp_tpa;
-						ft_memcpy(env->source_mac->bytes, arp_frame->arp_tha, sizeof(arp_frame->arp_tha));
+						ft_memcpy(&env->source_ip->sin_addr.s_addr, arp_frame->arp_spa, sizeof(arp_frame->arp_spa));
 					}
 					while (g_stop == false)
 					{

@@ -198,8 +198,8 @@ int			ft_malcolm(t_env *env)
 								}
 							}
 						}
-						break;
 					}*/
+					break;
 				}
 			}
 		}

@@ -55,16 +55,18 @@ static t_mac				*parse_mac(char *str)
 static struct sockaddr_in	*parse_ip(char *str)
 {
 	struct sockaddr_in	*sa;
+	char				*str_ip;
 
 	if (ft_strchr(str, ':'))
 		return (NULL);
-	if ((str = dns_lookup(str)) == NULL)
+	if ((str_ip = dns_lookup(str)) == NULL)
 		return (NULL);
 	if ((sa = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL)
 		return (NULL);
 	sa->sin_family = AF_INET;
-	if (inet_pton(AF_INET, str, &sa->sin_addr) != 1)
+	if (inet_pton(AF_INET, str_ip, &sa->sin_addr) != 1)
 		return (NULL);
+	free(str_ip);
 	return (sa);
 }
 

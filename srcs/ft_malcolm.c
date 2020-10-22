@@ -180,7 +180,7 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (g_stop == false)
-					{
+					{printf("putain\n");
 						recv(env->sock_fd, buf, buf_size, 0);
 						if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
 						{

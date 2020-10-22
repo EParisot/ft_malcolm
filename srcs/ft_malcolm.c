@@ -69,7 +69,7 @@ static int		init_sock(t_env *env, int proto, int type, int mode)
 {
 	struct timeval	tv_out;
 
-	tv_out.tv_sec = TIMEOUT;
+	tv_out.tv_sec = env->timeout;
 	tv_out.tv_usec = 0;
 	if ((env->sock_fd = socket(proto, type, htons(mode))) < 0)
 	{

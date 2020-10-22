@@ -101,7 +101,7 @@ void		sig_handler(int num_sig)
 	}
 }
 
-t_arp_packet	*build_pkt(uint32_t *spa, uint32_t *tpa, unsigned char *tha, bool rev)
+t_arp_packet	*build_pkt(unsigned char *spa, unsigned char *tpa, unsigned char *tha, bool rev)
 {
 	t_arp_packet *pkt;
 	t_mac empty_mac;
@@ -128,16 +128,16 @@ t_arp_packet	*build_pkt(uint32_t *spa, uint32_t *tpa, unsigned char *tha, bool r
 	pkt->op             = htons(ARPOP_REPLY);
 	if (rev == false)
 	{
-		pkt->source_ip = ntohl(*spa);
+		ft_memcpy(&pkt->source_ip, spa, sizeof(spa));
 		ft_memcpy(&pkt->source_mac, tha, sizeof(tha));
-		pkt->target_ip = ntohl(*tpa);
+		ft_memcpy(&pkt->target_ip, tpa, sizeof(tpa));
 		ft_memcpy(&pkt->target_mac, &empty_mac, sizeof(empty_mac));
 	}
 	else
 	{
-		pkt->source_ip = ntohl(*tpa);
+		ft_memcpy(&pkt->source_ip, tpa, sizeof(tpa));
 		ft_memcpy(&pkt->source_mac, tha, sizeof(tha));
-		pkt->target_ip = ntohl(*spa);
+		ft_memcpy(&pkt->target_ip, spa, sizeof(spa));
 		ft_memcpy(&pkt->target_mac, &empty_mac, sizeof(empty_mac));
 	}
 	ft_bzero(pkt->padding, 18);
@@ -215,7 +215,7 @@ int			ft_malcolm(t_env *env)
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-		if ((pkt = build_pkt((uint32_t *)arp_frame->arp_spa, (uint32_t *)arp_frame->arp_tpa, env->source_mac->bytes, false)) == NULL)
+		if ((pkt = build_pkt(arp_frame->arp_spa, arp_frame->arp_tpa, env->source_mac->bytes, false)) == NULL)
 		{
 			close(env->sock_fd);
 			return (-1);
@@ -235,7 +235,7 @@ int			ft_malcolm(t_env *env)
 				arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 				arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 				env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-			if ((pkt = build_pkt((uint32_t *)arp_frame->arp_tpa, (uint32_t *)arp_frame->arp_spa, env->source_mac->bytes, true)) == NULL)
+			if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, true)) == NULL)
 			{
 				close(env->sock_fd);
 				return (-1);

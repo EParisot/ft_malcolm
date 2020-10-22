@@ -33,6 +33,7 @@ bool g_stop;
 
 #define PKT_SIZE 1024
 #define TIMEOUT 1
+#define IP_ADDR_LEN 4
 
 typedef struct			s_mac
 {
@@ -66,9 +67,9 @@ typedef struct __attribute__((packed)) s_arp_packet
   uint8_t				prot_addr_size;
   uint16_t				op;
   uint8_t				source_mac[ETHER_ADDR_LEN];
-  uint32_t				source_ip;
+  uint8_t				source_ip[IP_ADDR_LEN];
   uint8_t				target_mac[ETHER_ADDR_LEN];
-  uint32_t				target_ip;
+  uint8_t				target_ip[IP_ADDR_LEN];
   unsigned char			padding[18];
 }						t_arp_packet;
 

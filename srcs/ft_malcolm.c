@@ -173,7 +173,7 @@ int			ft_malcolm(t_env *env)
 					(env->specific == true && htonl(*(uint32_t*)arp_frame->arp_spa) == htonl(env->target_ip->sin_addr.s_addr) &&
 					htonl(*(uint32_t*)arp_frame->arp_tpa) == htonl(env->source_ip->sin_addr.s_addr)))
 				{
-					printf("Got an arp request from target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
+					printf("Got an ARP request from target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 						arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 						arp_frame->arp_sha[0], arp_frame->arp_sha[1], arp_frame->arp_sha[2], arp_frame->arp_sha[3], arp_frame->arp_sha[4], arp_frame->arp_sha[5],
 						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
@@ -189,7 +189,7 @@ int			ft_malcolm(t_env *env)
 								(env->specific == true && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(env->target_ip->sin_addr.s_addr) &&
 								htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(env->source_ip->sin_addr.s_addr)))
 							{
-								printf("Got an arp reply from target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
+								printf("Got an ARP reply from target with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 									resp_arp_frame->arp_spa[0], resp_arp_frame->arp_spa[1], resp_arp_frame->arp_spa[2], resp_arp_frame->arp_spa[3],
 									resp_arp_frame->arp_sha[0], resp_arp_frame->arp_sha[1], resp_arp_frame->arp_sha[2], resp_arp_frame->arp_sha[3], resp_arp_frame->arp_sha[4], resp_arp_frame->arp_sha[5],
 									resp_arp_frame->arp_tpa[0], resp_arp_frame->arp_tpa[1], resp_arp_frame->arp_tpa[2], resp_arp_frame->arp_tpa[3],
@@ -208,7 +208,7 @@ int			ft_malcolm(t_env *env)
 	{
 		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
 			return (-1);
-		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
+		printf("Sending spoofed ARP reply to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 			env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
 			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
@@ -226,7 +226,7 @@ int			ft_malcolm(t_env *env)
 			free(pkt);
 			return (-1);
 		}
-		printf("Sending spoofed ARP to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
+		printf("Sending spoofed ARP reply to ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\twith src ip %u.%u.%u.%u - mac %02x:%02x:%02x:%02x:%02x:%02x\n",
 			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 			0, 0, 0, 0, 0, 0,
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],

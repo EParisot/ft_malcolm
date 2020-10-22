@@ -1,0 +1,8 @@
+# check ARP table :
+arp -a
+
+# reset ARP table (trigger ARP requests) :
+arp -d
+
+# listen every ARP request :
+sudo tcpdump -ennvvXSs 1514 -i enp0s3 arp

@@ -128,16 +128,16 @@ t_arp_packet	*build_pkt(uint8_t *spa, uint8_t *tpa, uint8_t *tha, bool rev)
 	pkt->op             = htons(ARPOP_REPLY);
 	if (rev == false)
 	{
-		ft_memcpy(pkt->source_ip, spa, sizeof(*spa));
+		ft_memcpy(pkt->source_ip, spa, sizeof(spa));
 		ft_memcpy(pkt->source_mac, tha, sizeof(tha));
-		ft_memcpy(pkt->target_ip, tpa, sizeof(*tpa));
+		ft_memcpy(pkt->target_ip, tpa, sizeof(tpa));
 		ft_memcpy(pkt->target_mac, &empty_mac, sizeof(empty_mac));
 	}
 	else
 	{
-		ft_memcpy(pkt->source_ip, tpa, sizeof(*tpa));
+		ft_memcpy(pkt->source_ip, tpa, sizeof(tpa));
 		ft_memcpy(pkt->source_mac, tha, sizeof(tha));
-		ft_memcpy(pkt->target_ip, spa, sizeof(*spa));
+		ft_memcpy(pkt->target_ip, spa, sizeof(spa));
 		ft_memcpy(pkt->target_mac, &empty_mac, sizeof(empty_mac));
 	}
 	ft_bzero(pkt->padding, 18);

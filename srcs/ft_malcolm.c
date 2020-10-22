@@ -101,24 +101,24 @@ void		sig_handler(int num_sig)
 	}
 }
 
-t_arp_packet	*build_pkt(uint8_t *spa, uint8_t *tpa, uint8_t *tha, bool rev)
+t_arp_packet	*build_pkt(uint8_t *spa, uint8_t *tpa, uint8_t *sha, uint8_t *tha, bool rev)
 {
 	t_arp_packet *pkt;
 	t_mac empty_mac;
 
-	ft_bzero(&empty_mac, sizeof(empty_mac));
+	ft_bzero(&empty_mac, ETHER_ADDR_LEN);
 	if ((pkt = (t_arp_packet *)malloc(sizeof(t_arp_packet))) == NULL)
 		return (NULL);
 	ft_bzero(pkt, sizeof(pkt));
 	if (rev == false)
 	{
-		ft_memcpy(pkt->targ_hw_addr, tha, sizeof(tha));
-		ft_memcpy(pkt->src_hw_addr, &empty_mac, sizeof(empty_mac));
+		ft_memcpy(pkt->targ_hw_addr, sha, ETHER_ADDR_LEN);
+		ft_memcpy(pkt->src_hw_addr, tha, ETHER_ADDR_LEN);
 	}
 	else
 	{
-		ft_memcpy(pkt->targ_hw_addr, &empty_mac, sizeof(empty_mac));
-		ft_memcpy(pkt->src_hw_addr, tha, sizeof(tha));
+		ft_memcpy(pkt->targ_hw_addr, tha, ETHER_ADDR_LEN);
+		ft_memcpy(pkt->src_hw_addr, sha, ETHER_ADDR_LEN);
 	}
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
@@ -129,14 +129,14 @@ t_arp_packet	*build_pkt(uint8_t *spa, uint8_t *tpa, uint8_t *tha, bool rev)
 	if (rev == false)
 	{
 		ft_memcpy(pkt->source_ip, spa, IP_ADDR_LEN);
-		ft_memcpy(pkt->source_mac, tha, ETHER_ADDR_LEN);
+		ft_memcpy(pkt->source_mac, sha, ETHER_ADDR_LEN);
 		ft_memcpy(pkt->target_ip, tpa, IP_ADDR_LEN);
 		ft_memcpy(pkt->target_mac, &empty_mac, ETHER_ADDR_LEN);
 	}
 	else
 	{
 		ft_memcpy(pkt->source_ip, tpa, IP_ADDR_LEN);
-		ft_memcpy(pkt->source_mac, tha, ETHER_ADDR_LEN);
+		ft_memcpy(pkt->source_mac, sha, ETHER_ADDR_LEN);
 		ft_memcpy(pkt->target_ip, spa, IP_ADDR_LEN);
 		ft_memcpy(pkt->target_mac, &empty_mac, ETHER_ADDR_LEN);
 	}
@@ -214,7 +214,7 @@ int			ft_malcolm(t_env *env)
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-		if ((pkt = build_pkt(arp_frame->arp_spa, arp_frame->arp_tpa, env->source_mac->bytes, false)) == NULL)
+		if ((pkt = build_pkt(arp_frame->arp_spa, arp_frame->arp_tpa, env->source_mac->bytes, arp_frame->arp_tha, false)) == NULL)
 		{
 			close(env->sock_fd);
 			return (-1);
@@ -234,7 +234,7 @@ int			ft_malcolm(t_env *env)
 				arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
 				arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 				env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-			if ((pkt = build_pkt(arp_frame->arp_spa, arp_frame->arp_tpa, env->source_mac->bytes, true)) == NULL)
+			if ((pkt = build_pkt(arp_frame->arp_spa, arp_frame->arp_tpa, env->source_mac->bytes, arp_frame->arp_tha, true)) == NULL)
 			{
 				close(env->sock_fd);
 				return (-1);

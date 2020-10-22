@@ -117,8 +117,8 @@ t_arp_packet	*build_pkt(uint32_t *spa, uint32_t *tpa, unsigned char *tha, bool r
 	}
 	else
 	{
-		ft_memcpy(pkt->src_hw_addr, tha, sizeof(tha));
 		ft_memcpy(pkt->targ_hw_addr, &empty_mac, sizeof(empty_mac));
+		ft_memcpy(pkt->src_hw_addr, tha, sizeof(tha));
 	}
 	pkt->frame_type     = htons(0x0806);
 	pkt->hw_type        = htons(1);
@@ -128,16 +128,16 @@ t_arp_packet	*build_pkt(uint32_t *spa, uint32_t *tpa, unsigned char *tha, bool r
 	pkt->op             = htons(ARPOP_REPLY);
 	if (rev == false)
 	{
-		ft_memcpy(&pkt->source_ip , spa, sizeof(spa));
+		pkt->source_ip = *spa;
 		ft_memcpy(&pkt->source_mac, tha, sizeof(tha));
-		ft_memcpy(&pkt->target_ip, tpa, sizeof(tpa));
+		pkt->target_ip = *tpa;
 		ft_memcpy(&pkt->target_mac, &empty_mac, sizeof(empty_mac));
 	}
 	else
 	{
-		ft_memcpy(&pkt->source_ip, tpa, sizeof(tpa));
+		pkt->source_ip = *tpa;
 		ft_memcpy(&pkt->source_mac, tha, sizeof(tha));
-		ft_memcpy(&pkt->target_ip, spa, sizeof(spa));
+		pkt->target_ip = *spa;
 		ft_memcpy(&pkt->target_mac, &empty_mac, sizeof(empty_mac));
 	}
 	ft_bzero(pkt->padding, 18);

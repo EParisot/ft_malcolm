@@ -231,7 +231,7 @@ int			ft_malcolm(t_env *env)
 			env->target_mac->bytes[0], env->target_mac->bytes[1], env->target_mac->bytes[2], env->target_mac->bytes[3], env->target_mac->bytes[4], env->target_mac->bytes[5],
 			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
 			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-		if ((pkt = build_pkt(env, false)) == NULL)
+		if ((pkt = build_pkt(env, true)) == NULL)
 		{
 			close(env->sock_fd);
 			return (-1);

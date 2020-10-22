@@ -56,7 +56,7 @@ static struct sockaddr_in	*parse_ip(char *str)
 {
 	struct sockaddr_in	*sa;
 
-	if (inet_addr(str) == INADDR_NONE)
+	if (ft_strchr(str, ':'))
 		return (NULL);
 	if ((str = dns_lookup(str)) == NULL)
 		return (NULL);

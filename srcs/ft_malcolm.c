@@ -110,15 +110,15 @@ t_arp_packet	*build_pkt(t_env *env)
 	ft_bzero(pkt, sizeof(pkt));
 	ft_memcpy(pkt->targ_hw_addr, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	ft_memcpy(pkt->src_hw_addr, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-	pkt->frame_type     = htons(0x0806);
-	pkt->hw_type        = htons(1);
-	pkt->prot_type      = htons(0x0800);
-	pkt->hw_addr_size   = 6;
-	pkt->prot_addr_size = 4;
-	pkt->op             = htons(2);
-	pkt->source_ip = htonl(env->source_ip->sin_addr.s_addr);
+	pkt->frame_type     = ntohs(0x0806);
+	pkt->hw_type        = ntohs(1);
+	pkt->prot_type      = ntohs(0x0800);
+	pkt->hw_addr_size   = ntohs(6);
+	pkt->prot_addr_size = ntohs(4);
+	pkt->op             = ntohs(2);
+	pkt->source_ip = ntohl(env->source_ip->sin_addr.s_addr);
 	ft_memcpy(pkt->source_mac, env->source_mac->bytes, sizeof(env->source_mac->bytes));
-	pkt->target_ip = htonl(env->target_ip->sin_addr.s_addr);
+	pkt->target_ip = ntohl(env->target_ip->sin_addr.s_addr);
 	ft_memcpy(pkt->target_mac, env->target_mac->bytes, sizeof(env->target_mac->bytes));
 	return (pkt);
 }

@@ -187,8 +187,8 @@ int			ft_malcolm(t_env *env)
 							resp_arp_frame = (struct ether_arp *) (buf + 14);
 							if (ntohs(resp_arp_frame->arp_op) == ARPOP_REPLY)
 							{printf("%d, %d\n", htonl(*(uint32_t*)resp_arp_frame->arp_spa), htonl(*(uint32_t*)arp_frame->arp_spa));
-								if ((env->specific == false && htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(*(uint32_t*)arp_frame->arp_tpa)) || \
-									(env->specific == true && htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(*(uint32_t*)arp_frame->arp_tpa) && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(*(uint32_t*)arp_frame->arp_spa)))
+								if ((env->specific == false && htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(*(uint32_t*)arp_frame->arp_spa)) || \
+									(env->specific == true && htonl(*(uint32_t*)resp_arp_frame->arp_spa) == htonl(*(uint32_t*)arp_frame->arp_spa) && htonl(*(uint32_t*)resp_arp_frame->arp_tpa) == htonl(*(uint32_t*)arp_frame->arp_tpa)))
 								{
 									printf("Got an ARP reply from source with ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n\t\t\t\tfor ip: %u.%u.%u.%u - mac: %02x:%02x:%02x:%02x:%02x:%02x\n", 
 										resp_arp_frame->arp_spa[0], resp_arp_frame->arp_spa[1], resp_arp_frame->arp_spa[2], resp_arp_frame->arp_spa[3],

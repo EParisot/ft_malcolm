@@ -52,6 +52,7 @@ typedef struct			s_env
 	t_mac				*target_mac;
 	bool				bi_directional;
 	bool				specific;
+	bool				flood;
 	int					sock_fd;
 	char				*iface;
 }						t_env;

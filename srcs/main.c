@@ -106,6 +106,11 @@ static int					parse_opt(t_env *env, int ac, char **av)
 			env->specific = true;
 			continue;
 		}
+		if (ft_strcmp(opt, "-f") == 0)
+		{
+			env->flood = true;
+			continue;
+		}
 		if ((ip = parse_ip(opt)) == NULL)
 		{
 			if ((mac = parse_mac(opt)) == NULL)
@@ -184,6 +189,7 @@ int						main(int ac, char **av)
 	env->target_mac = NULL;
 	env->bi_directional = false;
 	env->specific = false;
+	env->flood = false;
 	env->sock_fd = 0;
 	env->iface = NULL;
 	if ((ret = parse_opt(env, ac, av)))

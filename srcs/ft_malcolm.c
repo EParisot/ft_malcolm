@@ -144,15 +144,27 @@ t_arp_packet	*build_pkt(uint8_t *spa, uint8_t *tpa, uint8_t *sha, uint8_t *tha, 
 	return (pkt);
 }
 
-bool		arp_sniffer(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp_arp_frame, bool *done)
+int			ft_malcolm(t_env *env)
 {
 	size_t				buf_size = PKT_SIZE;
 	char				buf[buf_size];
 	char				resp_buf[buf_size];
+	struct ether_arp 	*arp_frame;
+	struct ether_arp	*resp_arp_frame;
+	t_arp_packet		*pkt = NULL;
+	struct sockaddr 	target_addr;
+	bool				done = false;
 
 	ft_bzero(buf, buf_size);
 	ft_bzero(resp_buf, buf_size);
-	while (g_stop == false && *done == false)
+	if (getlocalhost(env))
+		return (-1);
+	if (init_sock(env, AF_PACKET, SOCK_RAW, ETH_P_ARP))
+		return (-1);
+	print_init(env);
+	g_stop = false;
+	signal(SIGINT, sig_handler);
+	while (g_stop == false && done == false)
 	{
 		recv(env->sock_fd, buf, buf_size, 0);
 		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
@@ -184,7 +196,7 @@ bool		arp_sniffer(t_env *env, struct ether_arp *arp_frame, struct ether_arp *res
 										resp_arp_frame->arp_sha[0], resp_arp_frame->arp_sha[1], resp_arp_frame->arp_sha[2], resp_arp_frame->arp_sha[3], resp_arp_frame->arp_sha[4], resp_arp_frame->arp_sha[5],
 										resp_arp_frame->arp_tpa[0], resp_arp_frame->arp_tpa[1], resp_arp_frame->arp_tpa[2], resp_arp_frame->arp_tpa[3],
 										resp_arp_frame->arp_tha[0], resp_arp_frame->arp_tha[1], resp_arp_frame->arp_tha[2], resp_arp_frame->arp_tha[3], resp_arp_frame->arp_tha[4], resp_arp_frame->arp_tha[5]);
-									*done = true;
+									done = true;
 								}
 							}
 						}
@@ -194,14 +206,7 @@ bool		arp_sniffer(t_env *env, struct ether_arp *arp_frame, struct ether_arp *res
 			}
 		}
 	}
-	return (done);
-}
-
-int			arp_sender(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp_arp_frame, bool done)
-{
-	t_arp_packet		*pkt = NULL;
-	struct sockaddr 	target_addr;
-
+	close(env->sock_fd);
 	if (g_stop == false)
 	{
 		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
@@ -260,25 +265,5 @@ int			arp_sender(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp
 		close(env->sock_fd);
 		printf("Done.\n");
 	}
-	return (0);
-}
-
-int			ft_malcolm(t_env *env)
-{
-	struct ether_arp 	*arp_frame = NULL;
-	struct ether_arp	*resp_arp_frame = NULL;
-	bool				done = false;
-	
-	if (getlocalhost(env))
-		return (-1);
-	if (init_sock(env, AF_PACKET, SOCK_RAW, ETH_P_ARP))
-		return (-1);
-	print_init(env);
-	g_stop = false;
-	signal(SIGINT, sig_handler);
-	done = arp_sniffer(env, arp_frame, resp_arp_frame, &done);
-	close(env->sock_fd);
-	if (arp_sender(env, arp_frame, resp_arp_frame, done))
-		return (-1);
 	return (0);
 }

@@ -54,7 +54,7 @@ int			getlocalhost(t_env *env)
 			return (-1);
 		for (ifa = id; ifa != NULL; ifa = ifa->ifa_next)
 		{
-			if (strcmp(ifa->ifa_name, env->iface) == 0 && (ifa->ifa_addr->sa_family == AF_PACKET))
+			if (ft_strcmp(ifa->ifa_name, env->iface) == 0 && (ifa->ifa_addr->sa_family == AF_PACKET))
 			{
 				struct sockaddr_ll *s = (struct sockaddr_ll*)ifa->ifa_addr;
 				ft_memcpy(env->local_mac->bytes, s->sll_addr, 6);

@@ -63,9 +63,13 @@ static struct sockaddr_in	*parse_ip(char *str)
 		return (NULL);
 	if ((sa = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL)
 		return (NULL);
+	
+	char **tab = ft_strsplit(str_ip, '.');
+	uint8_t n_tab[4];
+	for (int t = 0; t < 4; t++)
+		n_tab[t] = (uint8_t)ft_atoi(tab[t]);
+	sa->sin_addr.s_addr = *(uint32_t*)n_tab;
 	sa->sin_family = AF_INET;
-	if (inet_pton(AF_INET, str_ip, &sa->sin_addr) != 1)
-		return (NULL);
 	free(str_ip);
 	return (sa);
 }

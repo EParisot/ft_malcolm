@@ -12,7 +12,7 @@
 
 #include "../includes/ft_malcolm.h"
 
-void						free_mac(char **mac)
+void free_mac(char **mac)
 {
 	for (size_t i = 0; i < ft_tablen(mac); i++)
 	{
@@ -21,14 +21,14 @@ void						free_mac(char **mac)
 	free(mac);
 }
 
-static t_mac				*parse_mac(char *str)
+static t_mac *parse_mac(char *str)
 {
-	char	**mac_str;
-	t_mac	*mac;
-	size_t	mac_size;
-	int		test;
+	char **mac_str;
+	t_mac *mac;
+	size_t mac_size;
+	int test;
 
-	if ((mac = (t_mac*)malloc(sizeof(t_mac))) == NULL)
+	if ((mac = (t_mac *)malloc(sizeof(t_mac))) == NULL)
 		return (NULL);
 	ft_strcpy(mac->str, str);
 	mac_str = ft_strsplit(str, ':');
@@ -52,10 +52,10 @@ static t_mac				*parse_mac(char *str)
 	return (mac);
 }
 
-static struct sockaddr_in	*parse_ip(char *str)
+static struct sockaddr_in *parse_ip(char *str)
 {
-	struct sockaddr_in	*sa;
-	char				*str_ip;
+	struct sockaddr_in *sa;
+	char *str_ip;
 
 	if (ft_strchr(str, ':'))
 		return (NULL);
@@ -63,27 +63,28 @@ static struct sockaddr_in	*parse_ip(char *str)
 		return (NULL);
 	if ((sa = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL)
 		return (NULL);
-	
+
 	char **tab = ft_strsplit(str_ip, '.');
 	uint8_t n_tab[4];
 	for (int t = 0; t < 4; t++)
 		n_tab[t] = (uint8_t)ft_atoi(tab[t]);
-	sa->sin_addr.s_addr = *(uint32_t*)n_tab;
+	sa->sin_addr.s_addr = *(uint32_t *)n_tab;
 	sa->sin_family = AF_INET;
 	free(str_ip);
+	free(tab);
 	return (sa);
 }
 
-static int					parse_opt(t_env *env, int ac, char **av)
+static int parse_opt(t_env *env, int ac, char **av)
 {
-	char				*opt;
-	struct sockaddr_in	*ip;
-	t_mac				*mac;
+	char *opt;
+	struct sockaddr_in *ip;
+	t_mac *mac;
 
 	if (ac < 5)
 	{
 		print_usage();
-		return(-1);
+		return (-1);
 	}
 	for (int i = 1; i < ac; i++)
 	{
@@ -153,7 +154,7 @@ static int					parse_opt(t_env *env, int ac, char **av)
 	return (0);
 }
 
-static void				clean_env(t_env *env)
+static void clean_env(t_env *env)
 {
 	if (env->localhost)
 		free(env->localhost);
@@ -172,17 +173,17 @@ static void				clean_env(t_env *env)
 	free(env);
 }
 
-int						main(int ac, char **av)
+int main(int ac, char **av)
 {
-	int 	ret = 0;
-	t_env	*env;
+	int ret = 0;
+	t_env *env;
 
 	if (getuid() != 0)
 	{
 		printf("ft_malcolm: Insufficient Permission.\n");
 		return (-1);
 	}
-	if ((env = (t_env*)malloc(sizeof(t_env))) == NULL)
+	if ((env = (t_env *)malloc(sizeof(t_env))) == NULL)
 		return (-1);
 	env->timeout = TIMEOUT;
 	env->localhost = NULL;

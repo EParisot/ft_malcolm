@@ -67,7 +67,10 @@ static struct sockaddr_in *parse_ip(char *str)
 	char **tab = ft_strsplit(str_ip, '.');
 	uint8_t n_tab[4];
 	for (int t = 0; t < 4; t++)
+	{
 		n_tab[t] = (uint8_t)ft_atoi(tab[t]);
+		free(tab[t]);
+	}
 	sa->sin_addr.s_addr = *(uint32_t *)n_tab;
 	sa->sin_family = AF_INET;
 	free(str_ip);

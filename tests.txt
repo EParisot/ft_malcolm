@@ -1,3 +1,5 @@
+# Remember to use the correct interface with -i option
+
 # check ARP table :
 arp -a
 

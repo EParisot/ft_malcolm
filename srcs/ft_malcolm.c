@@ -78,10 +78,6 @@ static int init_sock(t_env *env, int proto, int type, int mode)
 	}
 	if (mode == ETH_P_ARP)
 	{
-		if (env->specific == false)
-		{
-			bind(env->sock_fd, INADDR_ANY, sizeof(struct sockaddr));
-		}
 		if (setsockopt(env->sock_fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv_out, sizeof(tv_out)) != 0)
 		{
 			return (-1);
@@ -154,7 +150,7 @@ bool listen_arp(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp_
 	ft_bzero(resp_buf, buf_size);
 	while (g_stop == false && done == false)
 	{
-		recv(env->sock_fd, buf, buf_size, 0);
+		recvfrom(env->sock_fd, buf, buf_size, 0, NULL, 0);
 		if ((((buf[12]) << 8) + buf[13]) == ETH_P_ARP)
 		{
 			arp_frame = (struct ether_arp *)(buf + 14);
@@ -170,7 +166,7 @@ bool listen_arp(t_env *env, struct ether_arp *arp_frame, struct ether_arp *resp_
 						   arp_frame->arp_tha[0], arp_frame->arp_tha[1], arp_frame->arp_tha[2], arp_frame->arp_tha[3], arp_frame->arp_tha[4], arp_frame->arp_tha[5]);
 					if (g_stop == false)
 					{
-						recv(env->sock_fd, resp_buf, buf_size, 0);
+						recvfrom(env->sock_fd, resp_buf, buf_size, 0, NULL, 0);
 						if ((((resp_buf[12]) << 8) + resp_buf[13]) == ETH_P_ARP)
 						{
 							resp_arp_frame = (struct ether_arp *)(resp_buf + 14);

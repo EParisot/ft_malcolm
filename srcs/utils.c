@@ -39,14 +39,18 @@ void			print_mac(unsigned char *mac)
 
 void			print_init(t_env *env)
 {
+	uint8_t *ptr;
 	if (env->specific == false)
 	{
-		printf("Listening ARP packets on %s from %s to broadcast\n", env->iface, inet_ntoa(env->target_ip->sin_addr));
+		ptr = (uint8_t*)&env->target_ip->sin_addr.s_addr;
+		printf("Listening ARP packets on %s from %d.%d.%d.%d to broadcast\n", env->iface, ptr[0], ptr[1], ptr[2], ptr[3]);
 	}
 	else
 	{
-		printf("Listening ARP packets on %s from %s ", env->iface, inet_ntoa(env->target_ip->sin_addr));
-		printf("to %s\n", inet_ntoa(env->source_ip->sin_addr));
+		ptr = (uint8_t*)&env->target_ip->sin_addr.s_addr;
+		printf("Listening ARP packets on %s from %d.%d.%d.%d ", env->iface, ptr[0], ptr[1], ptr[2], ptr[3]);
+		ptr = (uint8_t*)&env->source_ip->sin_addr.s_addr;
+		printf("to %d.%d.%d.%d\n", ptr[0], ptr[1], ptr[2], ptr[3]);
 	}
 	printf("Spoof MAC : ");
 	print_mac(env->source_mac->bytes);
@@ -107,7 +111,8 @@ static char		*dns_lookup_b(struct addrinfo *result)
 		if ((str_addr = (char *)malloc(INET_ADDRSTRLEN)) == NULL)
 			return (NULL);
 		ft_bzero(str_addr, INET_ADDRSTRLEN);
-		inet_ntop(AF_INET, &(addr_in->sin_addr), str_addr, INET_ADDRSTRLEN);
+		uint8_t *ptr = (uint8_t*)&addr_in->sin_addr.s_addr;
+		sprintf(str_addr, "%d.%d.%d.%d", ptr[0], ptr[1], ptr[2], ptr[3]);
 	}
 	else if (result->ai_addr->sa_family == AF_INET6)
 	{

@@ -12,7 +12,7 @@
 
 #include "../includes/ft_malcolm.h"
 
-void			print_usage()
+void print_usage()
 {
 	printf("usage: ./ft_malcolm src_IP src_MAC tgt_IP tgt_MAC [-i iface] [-t sec] [-s] [-b]\n\
 	iface:   network interface (str)\n\
@@ -22,10 +22,11 @@ void			print_usage()
 	tgt_MAC: target MAC (XX:XX:XX:XX:XX:XX)\n\
 	-t sec:  timeout seconds to wait for reply\n\
 	-s:      wait for specific IP source\n\
-	-b:      send bi-directional spoof\n");
+	-b:      send bi-directional spoof\n\
+	-f:		 flood arp spoofing\n");
 }
 
-void			print_mac(unsigned char *mac)
+void print_mac(unsigned char *mac)
 {
 	for (int i = 0; i < 6; i++)
 	{
@@ -33,30 +34,30 @@ void			print_mac(unsigned char *mac)
 		if (i < 5)
 			printf(":");
 		else
-			printf("\n");		
+			printf("\n");
 	}
 }
 
-void			print_init(t_env *env)
+void print_init(t_env *env)
 {
 	uint8_t *ptr;
 	if (env->specific == false)
 	{
-		ptr = (uint8_t*)&env->target_ip->sin_addr.s_addr;
+		ptr = (uint8_t *)&env->target_ip->sin_addr.s_addr;
 		printf("Listening ARP packets on %s from %d.%d.%d.%d to broadcast\n", env->iface, ptr[0], ptr[1], ptr[2], ptr[3]);
 	}
 	else
 	{
-		ptr = (uint8_t*)&env->target_ip->sin_addr.s_addr;
+		ptr = (uint8_t *)&env->target_ip->sin_addr.s_addr;
 		printf("Listening ARP packets on %s from %d.%d.%d.%d ", env->iface, ptr[0], ptr[1], ptr[2], ptr[3]);
-		ptr = (uint8_t*)&env->source_ip->sin_addr.s_addr;
+		ptr = (uint8_t *)&env->source_ip->sin_addr.s_addr;
 		printf("to %d.%d.%d.%d\n", ptr[0], ptr[1], ptr[2], ptr[3]);
 	}
 	printf("Spoof MAC : ");
 	print_mac(env->source_mac->bytes);
 }
 
-static void		set_addr_info_struct(struct addrinfo *hints)
+static void set_addr_info_struct(struct addrinfo *hints)
 {
 	ft_memset(hints, 0, sizeof(struct addrinfo));
 	hints->ai_family = AF_UNSPEC;
@@ -68,7 +69,7 @@ static void		set_addr_info_struct(struct addrinfo *hints)
 	hints->ai_next = NULL;
 }
 
-static void		free_addr_info(struct addrinfo *result)
+static void free_addr_info(struct addrinfo *result)
 {
 	struct addrinfo *tmp;
 
@@ -81,8 +82,8 @@ static void		free_addr_info(struct addrinfo *result)
 	}
 }
 
-static int		dns_err(char *addr, struct addrinfo *hints, \
-												struct addrinfo **result)
+static int dns_err(char *addr, struct addrinfo *hints,
+				   struct addrinfo **result)
 {
 	int err;
 
@@ -94,16 +95,16 @@ static int		dns_err(char *addr, struct addrinfo *hints, \
 		else if (err == -5)
 			fprintf(stderr, "ft_malcolm: %s: No address associated with hostname!\n", addr);
 		else if (err == -2)
-			fprintf(stderr, "ft_malcolm: %s: Name or service not known\n",addr);
+			fprintf(stderr, "ft_malcolm: %s: Name or service not known\n", addr);
 		return (-1);
 	}
 	return (0);
 }
 
-static char		*dns_lookup_b(struct addrinfo *result)
+static char *dns_lookup_b(struct addrinfo *result)
 {
-	struct sockaddr_in	*addr_in;
-	char				*str_addr;
+	struct sockaddr_in *addr_in;
+	char *str_addr;
 
 	if (result->ai_addr->sa_family == AF_INET)
 	{
@@ -111,7 +112,7 @@ static char		*dns_lookup_b(struct addrinfo *result)
 		if ((str_addr = (char *)malloc(INET_ADDRSTRLEN)) == NULL)
 			return (NULL);
 		ft_bzero(str_addr, INET_ADDRSTRLEN);
-		uint8_t *ptr = (uint8_t*)&addr_in->sin_addr.s_addr;
+		uint8_t *ptr = (uint8_t *)&addr_in->sin_addr.s_addr;
 		sprintf(str_addr, "%d.%d.%d.%d", ptr[0], ptr[1], ptr[2], ptr[3]);
 	}
 	else if (result->ai_addr->sa_family == AF_INET6)
@@ -122,11 +123,11 @@ static char		*dns_lookup_b(struct addrinfo *result)
 	return (str_addr);
 }
 
-char	*dns_lookup(char *addr)
+char *dns_lookup(char *addr)
 {
 	struct addrinfo hints;
 	struct addrinfo *result;
-	char			*str_res;
+	char *str_res;
 
 	result = NULL;
 	set_addr_info_struct(&hints);

@@ -201,7 +201,10 @@ int main(int ac, char **av)
 	env->sock_fd = 0;
 	env->iface = NULL;
 	if ((ret = parse_opt(env, ac, av)))
+	{
+		clean_env(env);
 		return (ret);
+	}
 	ret = ft_malcolm(env);
 	if (ret)
 		printf("Spoofing Failed\n");

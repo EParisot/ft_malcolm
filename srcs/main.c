@@ -36,6 +36,7 @@ static t_mac *parse_mac(char *str)
 	{
 		printf("ft_malcolm: Error in address %s\n", str);
 		free_mac(mac_str);
+		free(mac);
 		return (NULL);
 	}
 	for (size_t i = 0; i < mac_size; i++)
@@ -44,6 +45,7 @@ static t_mac *parse_mac(char *str)
 		{
 			printf("ft_malcolm: Error reading MAC address %s\n", str);
 			free_mac(mac_str);
+			free(mac);
 			return (NULL);
 		}
 		mac->bytes[i] = test;
